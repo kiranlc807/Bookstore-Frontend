@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, TextField } from "@mui/material";
 import "./Login.css"; // Create a separate CSS file for styling
 import { useNavigate } from "react-router-dom";
+import { LoginApi,SignupApi } from "../utils/userapi";
 
 const AuthComponent = () => {
   const [authType, setAuthType] = useState("login");
@@ -16,8 +17,10 @@ const AuthComponent = () => {
   const route = useNavigate();
   const handleSave = () => {
     if (authType === "login") {
-      console.log("Logging in with:", email, password);
-      route('/dashboard');
+      const res = LoginApi({email:email,password:password})
+      if(res.status===201){
+        route('/dashboard');
+      }
     } else {
       console.log(
         "Signing up with:",
@@ -26,8 +29,12 @@ const AuthComponent = () => {
         password,
         confirmPassword
       );
-      setAuthType("login")
+      const res = SignupApi({name:fullName,email:email,password:password})
+      if(res.status>=200&&res.status<=299)
+      {
+        setAuthType("login")
       route('/');
+      }
     }
   };
 
