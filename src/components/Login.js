@@ -15,25 +15,18 @@ const AuthComponent = () => {
     setAuthType(type);
   };
   const route = useNavigate();
-  const handleSave = () => {
+  const handleSave = async() => {
     if (authType === "login") {
-      const res = LoginApi({email:email,password:password})
+      const res = await LoginApi({email:email,password:password})
       if(res.status===201){
-        route('/dashboard');
+        route('/dashboard/books');
       }
     } else {
-      console.log(
-        "Signing up with:",
-        fullName,
-        email,
-        password,
-        confirmPassword
-      );
-      const res = SignupApi({name:fullName,email:email,password:password})
+      const res = await SignupApi({name:fullName,email:email,password:password})
       if(res.status>=200&&res.status<=299)
       {
         setAuthType("login")
-      route('/');
+        route('/');
       }
     }
   };

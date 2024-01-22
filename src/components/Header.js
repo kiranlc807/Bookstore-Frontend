@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { Book, AccountCircle, ShoppingCart, Search } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
   appBar: {
@@ -62,12 +63,25 @@ const Header = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const route = useNavigate();
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleProfileMenuClose = () => {
+  const handleProfileMenuClose = (action) => {
+    if(action==='wishlist')
+    {
+      route("/dashboard/wishlist")
+    }
+    else if(action==="profile")
+    {
+      route("/dashboard/profile")
+    }
+    else if(action==="logout")
+    {
+      localStorage.removeItem('Authorization');
+      route('/')
+    }
     setAnchorEl(null);
   };
 
@@ -80,12 +94,18 @@ const Header = () => {
     // Add your search logic here
   };
 
+  
+  const handleCart = ()=>{
+    route("/dashboard/cart");
+  }
+
   return (
     <div>
     <AppBar
       position="static"
       className={classes.appBar}
       sx={{ backgroundColor: "#A90000" }}
+      style={{position:"fixed", zIndex:"50"}}
     >
       <Toolbar>
         <div className={classes.title}>
@@ -120,11 +140,12 @@ const Header = () => {
             open={Boolean(anchorEl)}
             onClose={handleProfileMenuClose}
           >
-            <MenuItem onClick={handleProfileMenuClose}>My Orders</MenuItem>
-            <MenuItem onClick={handleProfileMenuClose}>Wishlist</MenuItem>
-            <MenuItem onClick={handleProfileMenuClose}>Logout</MenuItem>
+            <MenuItem onClick={()=>handleProfileMenuClose("profile")}>Profile</MenuItem>
+            <MenuItem onClick={()=>handleProfileMenuClose("orders")}>My Orders</MenuItem>
+            <MenuItem onClick={()=>handleProfileMenuClose("wishlist")}>Wishlist</MenuItem>
+            <MenuItem onClick={()=>handleProfileMenuClose("logout")}>Logout</MenuItem>
           </Menu>
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={handleCart}>
             <Badge badgeContent={0} color="secondary">
               <ShoppingCart />
             </Badge>
