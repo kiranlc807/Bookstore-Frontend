@@ -11,11 +11,11 @@ import { useParams } from "react-router-dom";
 import { GetBookByID } from "../utils/BookApi";
 import { useEffect } from "react";
 import { AddToCart } from "../utils/CartApi";
+import { AddToWishlist } from "../utils/WishListApi";
 
 const AboutBook = () => {
   const bookId = useParams();
   const [book,setBook] = useState({})
-  console.log("AboutBook after apicall", book.author);
   useEffect(() => {
     const fetchData = async () => {
         try {
@@ -26,11 +26,11 @@ const AboutBook = () => {
         }
         };
         fetchData();
-    }, []);
+    }, [bookId.id]);
   let imageUrl = book.bookImage
   let title = book.bookName
   let author = book.author
-  let discountedPrice = book.discountedPrice;
+  let discountPrice = book.discountPrice;
   let originalPrice = book.price;
   let rating = 4.5;
   let description =book.description;
@@ -39,9 +39,11 @@ const AboutBook = () => {
       const res = await AddToCart(bookId.id);
       console.log("AboutCart",res);
     }
-    const onAddToWishlist = ()=>{
 
+    const onAddToWishlist = async ()=>{
+      const res = await AddToWishlist(bookId.id);
     }
+
   return (
     <div style={{paddingTop:"10px",
     display:"flex",
@@ -113,7 +115,7 @@ const AboutBook = () => {
             {rating}★
           </p>
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <Typography variant="h6">RS {discountedPrice}</Typography>
+            <Typography variant="h6">RS {discountPrice}</Typography>
             <Typography
               variant="body3"
               color="textSecondary"

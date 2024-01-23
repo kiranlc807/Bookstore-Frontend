@@ -9,14 +9,21 @@ export const GetAllBook = async()=>{
             'Content-Type': 'application/json',
         },
     };
-    console.log(config)
+    console.log(config);
     const res = await axios.get("http://localhost:3000/api/v1/books",config)
     return res.data.data;
 }
 
 export const GetBookByID = async(bookId)=>{
-    const res = await axios.get(`http://localhost:3000/api/v1/books/${bookId}`);
-    console.log("Api",res.data.data)
+    const token = localStorage.getItem('Authorization');
+
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    };
+    const res = await axios.get(`http://localhost:3000/api/v1/books/${bookId}`,config);
     return res.data.data;
 }
 

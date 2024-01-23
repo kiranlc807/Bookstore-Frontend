@@ -9,10 +9,16 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useEffect } from "react";
 import { useState } from "react";
-import { GetCartItem } from "../utils/CartApi";
+import { AddToCart, GetCartItem } from "../utils/CartApi";
 import { GetBookByID } from "../utils/BookApi";
+import { useNavigate } from "react-router-dom";
 
-const CartItem = ({ _id, bookName, author, discountPrice, quantity, bookImage }) => {
+const CartItem = ({ _id, bookName, author, discountPrice, quantity, bookImage,bookId,setCartList}) => {
+
+  const route = useNavigate();
+  const handleNavigate = ()=>{
+    route(`/dashboard/aboutbook/${bookId}`);
+  }
 
   return (
     <Card
@@ -26,6 +32,7 @@ const CartItem = ({ _id, bookName, author, discountPrice, quantity, bookImage })
           height="100%"
           image={bookImage}
           sx={{ objectFit: "contain" }}
+          onClick={handleNavigate}
         />
       </div>
       <CardContent style={{ flex: "2" }}>
@@ -46,7 +53,7 @@ const CartItem = ({ _id, bookName, author, discountPrice, quantity, bookImage })
           <Typography variant="body1" style={{ margin: "0 8px" }}>
             {quantity}
           </Typography>
-          <IconButton size="small" color="primary">
+          <IconButton size="small" color="primary" onClick={()=>setCartList(bookId)}>
             <AddIcon />
           </IconButton>
         </div>
@@ -58,58 +65,12 @@ const CartItem = ({ _id, bookName, author, discountPrice, quantity, bookImage })
 const Cart = () => {
   const [bookCart,setCartList] = useState([]);
   const [bookDetails,setBookDetails] = useState([]);
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //       try {
-  //           let cartBooks = await GetCartItem();
-  //           bookId =  await cartBooks.map((cartItem)=>cartItem.bookId);
-  //            bookId.map(async(id)=>{
-  //               let book = await GetBookByID(id);
-  //               console.log("Inside",book);
-  //               setBookDetails({book});
-  //            })
-  //           setCartList(cartBooks);
-  //       } catch (error) {
-  //           console.error("Error fetching notes:", error);
-  //       }
-  //       };
-  //       fetchData();
-  //   }, []);
-//   useEffect(() => {
-//     const fetchData = async () => {
-//         try {
-//             let cartBooks = await GetCartItem();
-
-//             // Extract bookIds from cartItems
-//             const bookIds = cartBooks.map(cartItem => cartItem.bookId);
-
-//             // Fetch details for each bookId
-//             const bookDetailsPromises = bookIds.map(async id => {
-//                 let book = await GetBookByID(id);
-//                 return { id, book }; // Assuming GetBookByID returns the book details
-//             });
-
-//             // Wait for all book details promises to resolve
-//             const resolvedBookDetails = await Promise.all(bookDetailsPromises);
-
-//             // Update state with the book details
-//             setBookDetails(resolvedBookDetails);
-
-//             // Update state with the cart items
-//             setCartList(cartBooks);
-//         } catch (error) {
-//             console.error("Error fetching data:", error);
-//         }
-//     };
-
-//     fetchData();
-// }, []);
 
 useEffect(() => {
   const fetchData = async () => {
     try {
       let cartBooks = await GetCartItem();
-
+      console.log("Cart",cartBooks);
       // Extract bookIds and quantities from cartItems
       const bookIdQuantityMap = cartBooks.reduce((map, cartItem) => {
         map[cartItem.bookId] = cartItem.quantity;
@@ -138,7 +99,6 @@ useEffect(() => {
     fetchData();
   }, []);
 
-  console.log("Book",bookDetails);
 
   const getTotalItems = () => {
     return bookCart.reduce((total, item) => total + item.quantity, 0);
@@ -150,6 +110,64 @@ useEffect(() => {
       .toFixed(2);
   };
 
+  // const handleAddToCart = async(bookId)=>{
+  //   const updatedCart = bookCart.map((item) => {
+  //     if (item.bookId === bookId) {
+  //       item.quantity += 1;
+  //       let price = bookDetails.reduce((price,book)=>{
+  //         if(bookId===book._id)
+  //         {
+  //             price=book.discountPrice;
+              
+  //         }
+  //         return price;
+  //         }
+  //         );
+  //         console.log(price);
+  //       item.total=price*item.quantity;
+  //     }
+  //     return item;
+  //   });
+  //   const updateBook = bookDetails.map((book)=>{
+  //     console.log(book._id===bookId);
+  //     if(book._id===bookId){
+  //       book.quantity+=1;
+  //     }
+  //     return book;
+  //   })
+  //   setCartList(updatedCart);
+  //   setBookDetails(updateBook);
+  //   const res = await AddToCart(bookId);
+  // }
+  const handleAddToCart = async (bookId) => {
+    const updatedCart = bookCart.map((item) => {
+      if (item.bookId === bookId) {
+        item.quantity += 1;
+  
+        // Assuming bookDetails is an array of book objects
+        const matchingBook = bookDetails.find((book) => book._id === bookId);
+  
+        if (matchingBook) {
+          item.total = matchingBook.discountPrice * item.quantity;
+          console.log(matchingBook.discountPrice);
+        }
+      }
+      return item;
+    });
+  
+    const updatedBookDetails = bookDetails.map((book) => {
+      if (book._id === bookId) {
+        book.quantity += 1;
+      }
+      return book;
+    });
+  
+    // Assuming bookCart and bookDetails are state variables, update the state with the new arrays
+    setCartList(updatedCart);
+    setBookDetails(updatedBookDetails);
+    const res = await AddToCart(bookId);
+  };
+  
 
   return (
     <div style={{width:"75%"}}>
@@ -160,7 +178,7 @@ useEffect(() => {
       </div>
       <div>
         {bookDetails.map((item) => (
-          <CartItem key={item._id} {...item} />
+          <CartItem key={item._id} {...item} bookId={item._id} setCartList={(bookId)=>handleAddToCart(bookId)}/>
         ))}
       </div>
       <div style={{ marginTop: "16px", textAlign: "right" }}>

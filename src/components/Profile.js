@@ -119,15 +119,6 @@ const UserProfile = () => {
       <Box>
         <div style={{ display: "flex", flexDirection: "row", gap: "55%" }}>
           <h2>Address </h2>
-          {/* {!editAddress && (
-            <Button
-              variant="text"
-              onClick={handleEditAddress}
-              style={{ height: "30px", marginTop: "18px" }}
-            >
-              Edit
-            </Button>
-          )} */}
           <Button
             variant="text"
             color="primary"
