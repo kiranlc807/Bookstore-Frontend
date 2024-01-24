@@ -20,6 +20,7 @@ import {
   CardContent
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { PlaceOrder } from "../utils/OrderApi";
 
 
 const Cart = () => {
@@ -71,10 +72,10 @@ const Cart = () => {
   }, []);
 
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async() => {
     // Add your logic for placing an order here
     // This could include handling the input field values
-    setOrderDetailsExpanded(true);
+    const res = await PlaceOrder(formdata);
   };
 
   const getTotalItems = () => {
@@ -119,7 +120,7 @@ const Cart = () => {
     const updatedCart = bookCart
       .map((item) => {
         if (item.bookId === bookId) {
-          if (item.quantity > 1) {
+          if (item.quantity > 0) {
             item.quantity -= 1;
   
             // Assuming bookDetails is an array of book objects
@@ -213,7 +214,7 @@ const Cart = () => {
               </div>
             </RadioGroup>
             <div style={{ textAlign: "right",marginRight:"20px",marginTop:"2%"}}>
-            <Button variant="contained" color="primary" onClick={handlePlaceOrder} style={{ marginTop: '10px' }}>
+            <Button variant="contained" color="primary" onClick={()=>setOrderDetailsExpanded(true)} style={{ marginTop: '10px' }}>
               Place Order
             </Button>
             </div>
