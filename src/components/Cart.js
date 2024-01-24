@@ -9,107 +9,24 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useEffect } from "react";
 import { useState } from "react";
-import { GetCartItem } from "../utils/CartApi";
+import { AddToCart, GetCartItem } from "../utils/CartApi";
 import { GetBookByID } from "../utils/BookApi";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import CartItem from "./CartCard";
 
-const CartItem = ({ _id, bookName, author, discountPrice, quantity, bookImage }) => {
-
-  return (
-    <Card
-      key={_id}
-      style={{ marginBottom: "16px", display: "flex", height: "180px", width:"100%" }}
-    >
-      <div style={{ flex: "1", marginRight: "16px" }}>
-        <CardMedia
-          component="img"
-          alt={bookName}
-          height="100%"
-          image={bookImage}
-          sx={{ objectFit: "contain" }}
-        />
-      </div>
-      <CardContent style={{ flex: "2" }}>
-        <Typography variant="h6">{bookName}</Typography>
-        <Typography variant="subtitle1" color="textSecondary">
-          {author}
-        </Typography>
-        <Typography variant="body1">Price: RS.{discountPrice}</Typography>
-        <div
-          style={{ display: "flex", alignItems: "center", marginTop: "8px" }}
-        >
-          <Typography variant="body1" style={{ marginRight: "8px" }}>
-            Quantity:
-          </Typography>
-          <IconButton size="small" color="primary">
-            <RemoveIcon />
-          </IconButton>
-          <Typography variant="body1" style={{ margin: "0 8px" }}>
-            {quantity}
-          </Typography>
-          <IconButton size="small" color="primary">
-            <AddIcon />
-          </IconButton>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
 
 const Cart = () => {
   const [bookCart,setCartList] = useState([]);
   const [bookDetails,setBookDetails] = useState([]);
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //       try {
-  //           let cartBooks = await GetCartItem();
-  //           bookId =  await cartBooks.map((cartItem)=>cartItem.bookId);
-  //            bookId.map(async(id)=>{
-  //               let book = await GetBookByID(id);
-  //               console.log("Inside",book);
-  //               setBookDetails({book});
-  //            })
-  //           setCartList(cartBooks);
-  //       } catch (error) {
-  //           console.error("Error fetching notes:", error);
-  //       }
-  //       };
-  //       fetchData();
-  //   }, []);
-//   useEffect(() => {
-//     const fetchData = async () => {
-//         try {
-//             let cartBooks = await GetCartItem();
+  const cartItems=useSelector((store)=>store.cart.cartItems)
 
-//             // Extract bookIds from cartItems
-//             const bookIds = cartBooks.map(cartItem => cartItem.bookId);
-
-//             // Fetch details for each bookId
-//             const bookDetailsPromises = bookIds.map(async id => {
-//                 let book = await GetBookByID(id);
-//                 return { id, book }; // Assuming GetBookByID returns the book details
-//             });
-
-//             // Wait for all book details promises to resolve
-//             const resolvedBookDetails = await Promise.all(bookDetailsPromises);
-
-//             // Update state with the book details
-//             setBookDetails(resolvedBookDetails);
-
-//             // Update state with the cart items
-//             setCartList(cartBooks);
-//         } catch (error) {
-//             console.error("Error fetching data:", error);
-//         }
-//     };
-
-//     fetchData();
-// }, []);
-
+  console.log(cartItems);
 useEffect(() => {
   const fetchData = async () => {
     try {
       let cartBooks = await GetCartItem();
-
+      console.log("Cart",cartBooks);
       // Extract bookIds and quantities from cartItems
       const bookIdQuantityMap = cartBooks.reduce((map, cartItem) => {
         map[cartItem.bookId] = cartItem.quantity;
@@ -138,7 +55,6 @@ useEffect(() => {
     fetchData();
   }, []);
 
-  console.log("Book",bookDetails);
 
   const getTotalItems = () => {
     return bookCart.reduce((total, item) => total + item.quantity, 0);
@@ -150,6 +66,64 @@ useEffect(() => {
       .toFixed(2);
   };
 
+  // const handleAddToCart = async(bookId)=>{
+  //   const updatedCart = bookCart.map((item) => {
+  //     if (item.bookId === bookId) {
+  //       item.quantity += 1;
+  //       let price = bookDetails.reduce((price,book)=>{
+  //         if(bookId===book._id)
+  //         {
+  //             price=book.discountPrice;
+              
+  //         }
+  //         return price;
+  //         }
+  //         );
+  //         console.log(price);
+  //       item.total=price*item.quantity;
+  //     }
+  //     return item;
+  //   });
+  //   const updateBook = bookDetails.map((book)=>{
+  //     console.log(book._id===bookId);
+  //     if(book._id===bookId){
+  //       book.quantity+=1;
+  //     }
+  //     return book;
+  //   })
+  //   setCartList(updatedCart);
+  //   setBookDetails(updateBook);
+  //   const res = await AddToCart(bookId);
+  // }
+  const handleAddToCart = async (bookId) => {
+    const updatedCart = bookCart.map((item) => {
+      if (item.bookId === bookId) {
+        item.quantity += 1;
+  
+        // Assuming bookDetails is an array of book objects
+        const matchingBook = bookDetails.find((book) => book._id === bookId);
+  
+        if (matchingBook) {
+          item.total = matchingBook.discountPrice * item.quantity;
+          console.log(matchingBook.discountPrice);
+        }
+      }
+      return item;
+    });
+  
+    const updatedBookDetails = bookDetails.map((book) => {
+      if (book._id === bookId) {
+        book.quantity += 1;
+      }
+      return book;
+    });
+  
+    // Assuming bookCart and bookDetails are state variables, update the state with the new arrays
+    setCartList(updatedCart);
+    setBookDetails(updatedBookDetails);
+    const res = await AddToCart(bookId);
+  };
+  
 
   return (
     <div style={{width:"75%"}}>
@@ -160,7 +134,7 @@ useEffect(() => {
       </div>
       <div>
         {bookDetails.map((item) => (
-          <CartItem key={item._id} {...item} />
+          <CartItem key={item._id} {...item} bookId={item._id} setCartList={(bookId)=>handleAddToCart(bookId)}/>
         ))}
       </div>
       <div style={{ marginTop: "16px", textAlign: "right" }}>

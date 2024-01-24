@@ -5,23 +5,27 @@ import Button from "@mui/material/Button";
 import { useState } from "react";
 import { GetAllBook } from "../utils/BookApi";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { UseSelector } from "react-redux";
 // import BookCard from "./BookCard";
 
 const Books = ()=>{
     const [sortAnchorEl, setSortAnchorEl] = useState(null);
     const [sortOrder, setSortOrder] = useState("default");
     const [bookList,setBookList] = useState([]);
+    // const dispatch = useDispatch();
+    // const books=useSelector((book)=>book.books.bookList);
 
     useEffect(() => {
       const fetchData = async () => {
           try {
               let booksResponse = await GetAllBook();
-              // Filter notes based on the conditions
-              // let filteredNotes = notesResponse.data.filter(note => !note.archived && !note.trashed);
               setBookList(booksResponse);
+              // dispatch(
+              //   getBookList(booksResponse)
+              // )
           } catch (error) {
               console.error("Error fetching notes:", error);
-              // Handle the error appropriately, e.g., set an error state
           }
           };
           fetchData();

@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
   title: {
     display: "flex",
     alignItems: "center",
-    marginRight: 30,
+    marginLeft: "7%" ,
   },
   search: {
     display:"flex",
@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
     position: "relative",
     borderRadius: 4,
     backgroundColor: "white",
-    marginLeft: "18%",
+    marginLeft: "5%",
     width: "40%",
 
   },
@@ -56,6 +56,7 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     alignItems: "center",
     gap: 16,
+    marginRight:"8%"
   },
 }));
 

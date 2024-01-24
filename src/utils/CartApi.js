@@ -10,7 +10,6 @@ export const GetCartItem = async()=>{
         },
     };
     const res = await axios.get("http://localhost:3000/api/v1/cart",config)
-    console.log("Api",res.data.data);
     return res.data.data;
 }
 
