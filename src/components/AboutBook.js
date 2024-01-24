@@ -12,10 +12,19 @@ import { GetBookByID } from "../utils/BookApi";
 import { useEffect } from "react";
 import { AddToCart } from "../utils/CartApi";
 import { AddToWishlist } from "../utils/WishListApi";
+import { UseDispatch,useDispatch,useSelector } from "react-redux";
+import { addItemToCart } from "../utils/store/CartSlice";
 
 const AboutBook = () => {
   const bookId = useParams();
   const [book,setBook] = useState({})
+  const dispatch = useDispatch();
+
+
+
+
+
+
   useEffect(() => {
     const fetchData = async () => {
         try {
@@ -37,6 +46,9 @@ const AboutBook = () => {
 
     const onAddToBag = async ()=>{
       const res = await AddToCart(bookId.id);
+      dispatch(
+        addItemToCart(book)
+      )
       console.log("AboutCart",res);
     }
 
