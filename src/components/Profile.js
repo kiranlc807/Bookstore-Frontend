@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
@@ -6,21 +6,18 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
+import { getAddress } from "../utils/AddressApi";
 
 const UserProfile = () => {
-  const [formData, setFormData] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    password: "********",
-    mobileNumber: "123-456-7890",
-    address: "",
-    city: "",
-    state: "",
-    addressType: {
-      work: false,
-      home: false,
-    },
-  });
+  const [formData, setFormData] = useState({});
+  useEffect(()=>{
+    const fetchData = async ()=>{
+      const addressData = await getAddress();
+      console.log("Adress",addressData[0]);
+      setFormData(addressData[0]);
+    };
+    fetchData();
+  },[])
 
   const [editPersonalDetails, setEditPersonalDetails] = useState(false);
   const [editAddress, setEditAddress] = useState(false);
@@ -34,12 +31,12 @@ const UserProfile = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]:
-        type === "checkbox" ? { ...prevData[name], [value]: checked } : value,
-    }));
+    // const { name, value, type, checked } = e.target;
+    // setFormData((prevData) => ({
+    //   ...prevData,
+    //   [name]:
+    //     type === "checkbox" ? { ...prevData[name], [value]: checked } : value,
+    // }));
   };
 
   const handleSavePersonalDetails = () => {
@@ -71,35 +68,35 @@ const UserProfile = () => {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <TextField
-            label="Name"
+            // label="Name"
             name="name"
-            value={formData.name}
+            value={formData.fullname}
             onChange={handleChange}
             fullWidth
             disabled={!editPersonalDetails}
           />
           <TextField
-            label="Email"
+            // label="Email"
             type="email"
             name="email"
-            value={formData.email}
+            value="bookStore@gmail.com"
             onChange={handleChange}
             fullWidth
             disabled={!editPersonalDetails}
           />
           <TextField
-            label="Password"
+            // label="Password"
             type="password"
-            name="password"
-            value={formData.password}
+            // name="password"
+            value="***********"
             onChange={handleChange}
             fullWidth
             disabled={!editPersonalDetails}
           />
           <TextField
-            label="Mobile Number"
+            // label="Mobile Number"
             name="mobileNumber"
-            value={formData.mobileNumber}
+            value={formData.mobile}
             onChange={handleChange}
             fullWidth
             disabled={!editPersonalDetails}
@@ -130,7 +127,7 @@ const UserProfile = () => {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <TextField
-            label="Address"
+            // label="Address"
             name="address"
             value={formData.address}
             onChange={handleChange}
@@ -140,7 +137,7 @@ const UserProfile = () => {
           />
           <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
             <TextField
-              label="City"
+              // label="City"
               name="city"
               value={formData.city}
               onChange={handleChange}
@@ -148,7 +145,7 @@ const UserProfile = () => {
               disabled={!editAddress}
             />
             <TextField
-              label="State"
+              // label="State"
               name="state"
               value={formData.state}
               onChange={handleChange}
@@ -161,7 +158,7 @@ const UserProfile = () => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={formData.addressType.work}
+                // checked={formData.addressType.work}
                 onChange={handleChange}
                 name="addressType"
                 value="work"
@@ -173,7 +170,7 @@ const UserProfile = () => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={formData.addressType.home}
+                // checked={formData.addressType.home}
                 onChange={handleChange}
                 name="addressType"
                 value="home"
