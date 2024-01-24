@@ -27,3 +27,17 @@ export const AddToCart = async(bookId)=>{
     console.log("Added cart data",res.data.data);
     return res.data.data;
 }
+
+export const RemoveFromCart = async(bookId)=>{
+    const token = localStorage.getItem('Authorization');
+
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            // 'Content-Type': 'application/json',
+        },
+    };
+    console.log(bookId);
+    const res = await axios.put(`http://localhost:3000/api/v1/cart/reduce/${bookId}`,null,config);
+    return res.data.data;
+}

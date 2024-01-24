@@ -19,12 +19,7 @@ const AboutBook = () => {
   const bookId = useParams();
   const [book,setBook] = useState({})
   const dispatch = useDispatch();
-
-
-
-
-
-
+  
   useEffect(() => {
     const fetchData = async () => {
         try {

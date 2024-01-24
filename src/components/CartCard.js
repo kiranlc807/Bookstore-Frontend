@@ -14,7 +14,7 @@ import { GetBookByID } from "../utils/BookApi";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const CartItem = ({ _id, bookName, author, discountPrice, quantity, bookImage,bookId,setCartList}) => {
+const CartItem = ({ _id, bookName, author, discountPrice, quantity, bookImage,bookId,setCartListAdd,setCartListReduce}) => {
 
     const route = useNavigate();
     const handleNavigate = ()=>{
@@ -48,13 +48,13 @@ const CartItem = ({ _id, bookName, author, discountPrice, quantity, bookImage,bo
             <Typography variant="body1" style={{ marginRight: "8px" }}>
               Quantity:
             </Typography>
-            <IconButton size="small" color="primary">
+            <IconButton size="small" color="primary" onClick={()=>setCartListReduce(bookId)}>
               <RemoveIcon />
             </IconButton>
             <Typography variant="body1" style={{ margin: "0 8px" }}>
               {quantity}
             </Typography>
-            <IconButton size="small" color="primary" onClick={()=>setCartList(bookId)}>
+            <IconButton size="small" color="primary" onClick={()=>setCartListAdd(bookId)}>
               <AddIcon />
             </IconButton>
           </div>
