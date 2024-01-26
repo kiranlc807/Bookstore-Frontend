@@ -13,6 +13,7 @@ import { AddToCart, GetCartItem } from "../utils/CartApi";
 import { GetBookByID } from "../utils/BookApi";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { setCartItems } from "../utils/store/CartSlice";
 
 const CartItem = ({ _id, bookName, author, discountPrice, quantity, bookImage,bookId,setCartListAdd,setCartListReduce}) => {
 

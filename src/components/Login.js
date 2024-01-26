@@ -3,6 +3,7 @@ import { Button, TextField } from "@mui/material";
 import "./Login.css"; // Create a separate CSS file for styling
 import { useNavigate } from "react-router-dom";
 import { LoginApi,SignupApi } from "../utils/userapi";
+import image from '../assets/bookstore-logo.png'
 
 const AuthComponent = () => {
   const [authType, setAuthType] = useState("login");
@@ -43,12 +44,12 @@ const AuthComponent = () => {
         <div className="image-container">
           <img
             // className="image"
-            src="https://assets-global.website-files.com/5f9cbca2505a9a78986d3c79/61d4af00d494a0679a2c2f1f_blog%207-1_a.png"
+            src={image}
             alt="Description of the image"
-            style={{ width: "70%", height: "60%" }}
+            style={{ width: "70%", height: "60%" ,borderRadius:"50%",marginTop:"10px"}}
           />
           <br></br>
-          <h6 style={{ marginLeft: "-20px" }}>ONLINE BOOK SHOPING</h6>
+          <h5>ONLINE BOOK SHOPING</h5>
         </div>
         <div className="form-container" >
           <div

@@ -7,10 +7,13 @@ const bookSlice = createSlice({
     },
     reducers: {
         getBookList: (state,action)=>{
-            state.cartItems.push(action.payload);
+            state.bookList.push(action.payload);
+        },
+        addBooks: (state,action)=>{
+            state.bookList = action.payload;
         }
     }
 })
 
-export const {getBookList} = bookSlice.actions;
+export const {getBookList,addBooks} = bookSlice.actions;
 export default bookSlice.reducer;

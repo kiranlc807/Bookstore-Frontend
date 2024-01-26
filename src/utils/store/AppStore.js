@@ -5,7 +5,7 @@ import BookSlice from "./BookSlice";
 const appStore = configureStore({
     reducer:{
         cart:CartSlice,
-        books:BookSlice,
+        book:BookSlice,
     }
 })
 

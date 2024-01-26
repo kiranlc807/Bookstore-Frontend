@@ -68,7 +68,7 @@ const Wishlist = () => {
   },[])
 
 
-  const wishlistCount = wishlistItems.length;
+  const wishlistCount = bookDetails.length;
 
   const handleRemoveItem = async(bookId) => {
     const updatedbookDetails = bookDetails.filter((item)=> item._id!=bookId)

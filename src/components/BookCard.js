@@ -11,7 +11,7 @@ import "./Login.css";
 import { useNavigate } from "react-router-dom";
 
 const BookCard = ({bookObj}) => {
-  let imageUrl = bookObj.bookImage;
+  let imageUrl = bookObj.bookImage || "https://picsum.photos/200/300";
   let author = bookObj.author;
   let rating = "4.5";
   let discountedPrice = bookObj.discountPrice;
@@ -28,15 +28,15 @@ const BookCard = ({bookObj}) => {
       className="BookCard" // we need add only for css file hover property 
       onClick={() => handleNavigate(bookObj._id)}
     >
-      <Card sx={{height:"100%",width:"180px",height:"250px",objectFit:"contain"}}>
+      <Card sx={{height:"100%",width:"200px",height:"280px",objectFit:"contain"}}>
         <CardMedia
           component="img"
           height="100"
           image={imageUrl}
           alt={title}
-          sx={{ width: "60%", display: "felx", marginLeft: "18%",objectFit:"contain", backgroundColor:"#ECEAEA"}}
+          sx={{ width: "100%", display: "felx",objectFit:"contain", backgroundColor:"#ECEAEA",height:"50%"}}
         />
-        <CardContent sx={{height:"60px" }}>
+        <CardContent sx={{height:"50px" }}>
           <Typography variant="h7" component="div">
             {title}
           </Typography>
@@ -51,7 +51,7 @@ const BookCard = ({bookObj}) => {
               paddingRight: "2px",
               paddingLeft: "2px",
               borderRadius: "3px",
-              marginTop:"10px"
+              marginTop:"5px"
             }}
           >
             {rating}★

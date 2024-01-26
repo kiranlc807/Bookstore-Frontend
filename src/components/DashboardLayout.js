@@ -10,7 +10,7 @@ const DashboardLayout = () => {
         <div style={{display:"flex",}}>
         <Header />
         </div>
-        <div style={{display: "flex",marginTop:"70px",justifyContent:"center"}}>
+        <div style={{display: "flex",marginTop:"70px",justifyContent:"center",marginLeft:"15%",marginRight:"12%"}}>
         {/* <SidebarContainer drawerState={open} toggleDrawer={setOpen}/> */}
         <Outlet/>
         </div>

@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { AddToCart, GetCartItem } from "../utils/CartApi";
 import { GetBookByID } from "../utils/BookApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CartItem from "./CartCard";
 import { RemoveFromCart } from "../utils/CartApi";
 import {
@@ -21,12 +21,14 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { PlaceOrder } from "../utils/OrderApi";
+import { useNavigate } from "react-router-dom";
+import { setCartItems,addItemToCart } from "../utils/store/CartSlice";
 
 
 const Cart = () => {
   const [bookCart,setCartList] = useState([]);
   const [bookDetails,setBookDetails] = useState([]);
-  const cartItems=useSelector((store)=>store.cart.cartItems)
+  const cartItems = useSelector((store)=>store.cart.cartItems);
   const [accordionExpanded, setAccordionExpanded] = useState(false);
   const [orderDetailsExpanded, setOrderDetailsExpanded] = useState(false);
   const [formdata,setFormData]=useState({
@@ -37,11 +39,14 @@ const Cart = () => {
     state:'',
     type:'',
   })
+  const dispach = useDispatch();
 
+  console.log("useSelector",cartItems);
   useEffect(() => {
   const fetchData = async () => {
+    let cartBooks = []
     try {
-      let cartBooks = await GetCartItem();
+      cartBooks = await GetCartItem();
       console.log("Cart",cartBooks);
       // Extract bookIds and quantities from cartItems
       const bookIdQuantityMap = cartBooks.reduce((map, cartItem) => {
@@ -60,22 +65,29 @@ const Cart = () => {
       const resolvedBookDetails = await Promise.all(bookDetailsPromises);
 
         // Update state with the book details
+        console.log("books resolved",resolvedBookDetails);
         setBookDetails(resolvedBookDetails);
+        
+        
 
         // Update state with the cart items
         setCartList(cartBooks);
+        // debugger
+        dispach(setCartItems(resolvedBookDetails));
       } catch (error) {
         console.error('Error fetching data:', error);
       }
+
     };
     fetchData();
   }, []);
 
-
+    const route = useNavigate();
   const handlePlaceOrder = async() => {
-    // Add your logic for placing an order here
-    // This could include handling the input field values
     const res = await PlaceOrder(formdata);
+    if(res.code===201)
+    route('/dashboard/orderplacedsuccessfully')
+    
   };
 
   const getTotalItems = () => {
@@ -87,25 +99,54 @@ const Cart = () => {
       .reduce((total, item) => total + item.total, 0)
       .toFixed(2);
   };
+  // const handleAddToCart = async (bookId) => {
+  //   const updatedCart = bookDetails.map((item) => {
+  //     if (item.bookId === bookId) {
+  //       item.quantity += 1;
+  
+  //       // Assuming bookDetails is an array of book objects
+  //       const matchingBook = bookDetails.find((book) => book._id === bookId);
+  
+  //       if (matchingBook) {
+  //         item.total = matchingBook.discountPrice * item.quantity;
+  //       }
+  //     }
+  //     return item;
+  //   });
+  
+  //   const updatedBookDetails = bookDetails.map((book) => {
+  //     if (book._id === bookId) {
+  //       book.quantity += 1;
+  //     }
+  //     return book;
+  //   });
+  
+  //   // Assuming bookCart and bookDetails are state variables, update the state with the new arrays
+  //   setCartList(updatedCart);
+  //   setBookDetails(updatedBookDetails);
+  //   dispach(
+  //     addItemToCart(updatedBookDetails)
+  //   )
+  //   const res = await AddToCart(bookId);
+  // };
   const handleAddToCart = async (bookId) => {
     const updatedCart = bookCart.map((item) => {
       if (item.bookId === bookId) {
-        item.quantity += 1;
-  
-        // Assuming bookDetails is an array of book objects
-        const matchingBook = bookDetails.find((book) => book._id === bookId);
-  
-        if (matchingBook) {
-          item.total = matchingBook.discountPrice * item.quantity;
-          console.log(matchingBook.discountPrice);
-        }
+        return {
+          ...item,
+          quantity: item.quantity + 1,
+          total: item.total + item.discountPrice,
+        };
       }
       return item;
     });
   
     const updatedBookDetails = bookDetails.map((book) => {
       if (book._id === bookId) {
-        book.quantity += 1;
+        return {
+          ...book,
+          quantity: book.quantity + 1,
+        };
       }
       return book;
     });
@@ -113,11 +154,14 @@ const Cart = () => {
     // Assuming bookCart and bookDetails are state variables, update the state with the new arrays
     setCartList(updatedCart);
     setBookDetails(updatedBookDetails);
+    dispach(addItemToCart(updatedBookDetails)); // Assuming you have a correct action creator
+  
     const res = await AddToCart(bookId);
   };
+  
 
   const handleRemoveFromCart = async (bookId) => {
-    const updatedCart = bookCart
+    const updatedCart = bookDetails
       .map((item) => {
         if (item.bookId === bookId) {
           if (item.quantity > 0) {
@@ -151,6 +195,7 @@ const Cart = () => {
     
       // If you have an async operation like an API call to update the cart on the server, you can add it here
       const res = await RemoveFromCart(bookId);
+      dispach(setCartItems(res))
     };
 
     const handleInputChange = (field, value) => {
@@ -160,8 +205,7 @@ const Cart = () => {
       }));
     };
   
-  console.log(formdata);
-
+console.log("Carts UseSelector",cartItems);
   return (
     <div style={{width:"75%",}}>
       <div>
@@ -172,7 +216,7 @@ const Cart = () => {
       <div style={{border:"1px solid #E4E3E3" ,borderRadius:"5px"}}>
       <div className="container" style={{ display: "flex", justifyContent: "center" }}>
       <div style={{ width: "95%" }}>
-        {bookDetails.map((item) => (
+        {cartItems.map((item) => (
           <CartItem key={item._id} {...item} bookId={item._id} setCartListAdd={(bookId) => handleAddToCart(bookId)} setCartListReduce={(bookId) => handleRemoveFromCart(bookId)} />
           ))}
         </div>
