@@ -8,9 +8,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { GetWishListItems,RemoveWishList } from "../utils/WishListApi";
 import { GetBookByID } from "../utils/BookApi";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setWishlistItems,addItemToWishlist } from "../utils/store/WishListSlice";
 
 const WishlistItem = ({ bookName, author, discountPrice, bookImage, onRemove,bookId }) => {
-
+  
   const route = useNavigate();
   const handleNavigate = ()=>{
     route(`/dashboard/aboutbook/${bookId}`);
@@ -41,9 +43,12 @@ const WishlistItem = ({ bookName, author, discountPrice, bookImage, onRemove,boo
 };
 
 const Wishlist = () => {
-  const [wishlistItems, setWishlistItems] = useState([])
+  const [wishlist, setWishlist] = useState([])
   const [bookDetails,setBookDetails] = useState([])
+   const wishlistBooks = useSelector((store)=>store.wishlist.wishlistItems)
+  const dispach = useDispatch();
 
+ 
   useEffect(()=>{
     const fetchData = async ()=>{
       try{
@@ -59,7 +64,8 @@ const Wishlist = () => {
   
           // Update state with the book details
           setBookDetails(resolvedBookDetails);
-          setWishlistItems(book);
+          setWishlist(book);
+          dispach(setWishlistItems(resolvedBookDetails));
       }catch(error){
         console.error("Error fetching notes:", error);
       }
@@ -67,13 +73,13 @@ const Wishlist = () => {
     fetchData();
   },[])
 
-
-  const wishlistCount = bookDetails.length;
+  console.log("reduxData",wishlistBooks);
+  const wishlistCount = wishlistBooks.length;
 
   const handleRemoveItem = async(bookId) => {
-    const updatedbookDetails = bookDetails.filter((item)=> item._id!=bookId)
+    const updatedbookDetails = wishlistBooks.find((book)=>book._id===bookId)
+    dispach(addItemToWishlist(updatedbookDetails));
     const res = await RemoveWishList(bookId)
-    setBookDetails(updatedbookDetails);
   };
 
   return (
@@ -82,7 +88,7 @@ const Wishlist = () => {
         Wishlist ({wishlistCount} items)
       </Typography>
       <div>
-        {bookDetails.map((item) => (
+        {wishlistBooks.map((item) => (
           <WishlistItem
             key={item._id}
             bookId={item._id}

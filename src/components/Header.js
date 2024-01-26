@@ -270,7 +270,7 @@ const Header = () => {
       <AppBar
         position="static"
         className={classes.appBar}
-        sx={{ backgroundColor: "#A90000" }}
+        sx={{ backgroundColor: "#A03037" }}
         style={{ position: "fixed", zIndex: "50" }}
       >
         <Toolbar>

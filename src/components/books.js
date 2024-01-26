@@ -161,7 +161,7 @@ const Books = () => {
 
     setSortOrder(order);
     setSortAnchorEl(null);
-    // setBookList(sortedBooks);
+    dispach(addBooks(sortedBooks))
     setCurrentPage(1); // Reset to the first page after sorting
   };
 

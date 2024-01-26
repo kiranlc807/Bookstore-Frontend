@@ -14,15 +14,17 @@ import { useParams } from "react-router-dom";
 import { GetBookByID } from "../utils/BookApi";
 import { useEffect } from "react";
 import { AddToCart } from "../utils/CartApi";
-import { AddToWishlist } from "../utils/WishListApi";
+import { AddToWishlist,RemoveWishList } from "../utils/WishListApi";
 import { useDispatch,useSelector } from "react-redux";
 import { addItemToCart } from "../utils/store/CartSlice";
+import { addItemToWishlist } from "../utils/store/WishListSlice";
 
 const AboutBook = () => {
   const bookId = useParams();
   const [book,setBook] = useState({});
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+  const wishlistBooks = useSelector((store)=>store.wishlist.wishlistItems)
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -43,8 +45,6 @@ const AboutBook = () => {
   let originalPrice = book.price;
   let ratings = 4.5;
   let description =book.description;
-  book.quantity=1;
-  console.log("AboutBook",book);
 
     const onAddToBag = async ()=>{
       const res = await AddToCart(bookId.id);
@@ -54,7 +54,13 @@ const AboutBook = () => {
     }
 
     const onAddToWishlist = async ()=>{
+      const books=  wishlistBooks.find((list)=>list._id===book._id)
+      dispatch(addItemToWishlist(book));
+      if(!books){
       const res = await AddToWishlist(bookId.id);
+      }else{
+        const res = await RemoveWishList(bookId.id);
+      }
     }
 
     const handleRatingChange = (event, value) => {

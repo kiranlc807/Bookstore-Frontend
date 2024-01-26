@@ -65,14 +65,14 @@ const AuthComponent = () => {
             <Button
               variant="text"
               onClick={() => handleAuthTypeChange("login")}
-              style={{color:"#b50707",fontWeight:"bold",fontSize:"medium"}}
+              style={{color:"#A03037",fontWeight:"bold",fontSize:"medium"}}
             >
               Login
             </Button>
             <Button
               variant="text"
               onClick={() => handleAuthTypeChange("signup")}
-              style={{color:"#b50707",fontWeight:"bold",fontSize:"medium"}}
+              style={{color:"#A03037",fontWeight:"bold",fontSize:"medium"}}
             >
               Signup
             </Button>
@@ -99,7 +99,7 @@ const AuthComponent = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <Button variant="contained" color="primary" onClick={handleSave} style={{backgroundColor:"#900000"}}>
+              <Button variant="contained" color="primary" onClick={handleSave} style={{backgroundColor:"#A03037"}}>
                 Login
               </Button>
               <p style={{ textAlign: "center" }}>or</p>
@@ -156,7 +156,7 @@ const AuthComponent = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <Button variant="contained" color="primary" onClick={handleSave} style={{backgroundColor:"#900000"}}>
+              <Button variant="contained" color="primary" onClick={handleSave} style={{backgroundColor:"#A03037"}}>
                 Register
               </Button>
             </div>
