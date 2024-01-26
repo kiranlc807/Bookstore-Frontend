@@ -25,7 +25,7 @@ export const AddToWishlist = async (bookId)=>{
     };
     console.log(config);
     const res = await axios.post(`http://localhost:3000/api/v1/wishlist/${bookId}`,null,config)
-    console.log("Addtocart",res.data);
+    console.log("Addtowishlist",res.data);
     return res.data.data;
 }
 

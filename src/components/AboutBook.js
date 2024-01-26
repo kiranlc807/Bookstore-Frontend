@@ -6,18 +6,25 @@ import {
   Button,
   Typography,
   Divider,
+  Box,
+  Rating,
+  TextField
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { GetBookByID } from "../utils/BookApi";
 import { useEffect } from "react";
 import { AddToCart } from "../utils/CartApi";
-import { AddToWishlist } from "../utils/WishListApi";
-import { UseDispatch,useDispatch,useSelector } from "react-redux";
+import { AddToWishlist,RemoveWishList } from "../utils/WishListApi";
+import { useDispatch,useSelector } from "react-redux";
 import { addItemToCart } from "../utils/store/CartSlice";
+import { addItemToWishlist } from "../utils/store/WishListSlice";
 
 const AboutBook = () => {
   const bookId = useParams();
-  const [book,setBook] = useState({})
+  const [book,setBook] = useState({});
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
+  const wishlistBooks = useSelector((store)=>store.wishlist.wishlistItems)
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -36,7 +43,7 @@ const AboutBook = () => {
   let author = book.author
   let discountPrice = book.discountPrice;
   let originalPrice = book.price;
-  let rating = 4.5;
+  let ratings = 4.5;
   let description =book.description;
 
     const onAddToBag = async ()=>{
@@ -44,20 +51,42 @@ const AboutBook = () => {
       dispatch(
         addItemToCart(book)
       )
-      console.log("AboutCart",res);
     }
 
     const onAddToWishlist = async ()=>{
+      const books=  wishlistBooks.find((list)=>list._id===book._id)
+      dispatch(addItemToWishlist(book));
+      if(!books){
       const res = await AddToWishlist(bookId.id);
+      }else{
+        const res = await RemoveWishList(bookId.id);
+      }
     }
 
+    const handleRatingChange = (event, value) => {
+      setRating(value);
+    };
+  
+    const handleReviewChange = (event) => {
+      setReview(event.target.value);
+    };
+
+    const handleSubmitReview = () => {
+      // Add logic to submit the review to your backend or store it locally
+      // You can use 'rating' and 'review' state values
+      console.log("Rating:", rating);
+      console.log("Review:", review);
+      // You can also add further actions like sending the review to the server, etc.
+    };
+
   return (
-    <div style={{paddingTop:"10px",
+    <div style={{
     display:"flex",
     flexDirection:"column",
     justifyContent:"center",
     width:"968px",
-    height:"585px"
+    height:"585px",
+    marginTop:"20px"
     }}>
       <div style={{ display: "flex", justifyContent: "center",gap:"20px"}}>
         <div style={{ marginRight: "10px", width: "30%"}}>
@@ -119,7 +148,7 @@ const AboutBook = () => {
               borderRadius: "3px",
             }}
           >
-            {rating}★
+            {ratings}★
           </p>
           <div style={{ display: "flex", flexDirection: "row" }}>
             <Typography variant="h6">RS {discountPrice}</Typography>
@@ -137,7 +166,7 @@ const AboutBook = () => {
             </Typography>
           </div>
           <Divider style={{ margin: "20px 0" }} />
-          <Typography variant="body1" paragraph sx={{ fontSize: "14px" }}>
+          <Typography variant="body1" paragraph sx={{ fontSize: "13px" }}>
             <p style={{ fontWeight: "bold" }}>about book</p> {description}
           </Typography>
           <Divider style={{ margin: "20px 0" }} />
@@ -145,6 +174,32 @@ const AboutBook = () => {
             Customer Reviews
           </Typography>
           {/* Add your customer review components or logic here */}
+          <Box style={{marginTop:"-10px"}}>
+            <Rating
+              name="rating"
+              value={rating}
+              onChange={handleRatingChange}
+              precision={0.5}
+            />
+          </Box>
+          <TextField
+            multiline
+            rows={2}
+            fullWidth
+            label="Write your review"
+            variant="outlined"
+            value={review}
+            onChange={handleReviewChange}
+            style={{ marginTop: "10px" }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSubmitReview}
+            style={{ marginTop: "10px" ,float:"right"}}
+          >
+            Submit
+          </Button>
         </div>
       </div>
     </div>

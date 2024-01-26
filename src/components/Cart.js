@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { AddToCart, GetCartItem } from "../utils/CartApi";
 import { GetBookByID } from "../utils/BookApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CartItem from "./CartCard";
 import { RemoveFromCart } from "../utils/CartApi";
 import {
@@ -20,12 +20,15 @@ import {
   CardContent
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { PlaceOrder } from "../utils/OrderApi";
+import { useNavigate } from "react-router-dom";
+import { setCartItems,addItemToCart,removeFromCart } from "../utils/store/CartSlice";
 
 
 const Cart = () => {
   const [bookCart,setCartList] = useState([]);
   const [bookDetails,setBookDetails] = useState([]);
-  const cartItems=useSelector((store)=>store.cart.cartItems)
+  const cartItems = useSelector((store)=>store.cart.cartItems);
   const [accordionExpanded, setAccordionExpanded] = useState(false);
   const [orderDetailsExpanded, setOrderDetailsExpanded] = useState(false);
   const [formdata,setFormData]=useState({
@@ -36,12 +39,14 @@ const Cart = () => {
     state:'',
     type:'',
   })
+  const dispach = useDispatch();
 
+  console.log("useSelector",cartItems);
   useEffect(() => {
   const fetchData = async () => {
+    let cartBooks = []
     try {
-      let cartBooks = await GetCartItem();
-      console.log("Cart",cartBooks);
+      cartBooks = await GetCartItem();
       // Extract bookIds and quantities from cartItems
       const bookIdQuantityMap = cartBooks.reduce((map, cartItem) => {
         map[cartItem.bookId] = cartItem.quantity;
@@ -60,96 +65,56 @@ const Cart = () => {
 
         // Update state with the book details
         setBookDetails(resolvedBookDetails);
+        
+        
 
         // Update state with the cart items
         setCartList(cartBooks);
+        // debugger
+        dispach(setCartItems(resolvedBookDetails));
       } catch (error) {
         console.error('Error fetching data:', error);
       }
+
     };
     fetchData();
   }, []);
 
-
-  const handlePlaceOrder = () => {
-    // Add your logic for placing an order here
-    // This could include handling the input field values
-    setOrderDetailsExpanded(true);
+    const route = useNavigate();
+  const handlePlaceOrder = async() => {
+    const res = await PlaceOrder(formdata);
+    if(res.code===201)
+    route('/dashboard/orderplacedsuccessfully')
+    
   };
 
-  const getTotalItems = () => {
-    return bookCart.reduce((total, item) => total + item.quantity, 0);
-  };
+  // const getTotalItems = () => {
+  //   return bookCart.reduce((total, item) => total + item.quantity, 0);
+  // };
 
   const getTotalPrice = () => {
-    return bookCart
-      .reduce((total, item) => total + item.total, 0)
-      .toFixed(2);
-  };
-  const handleAddToCart = async (bookId) => {
-    const updatedCart = bookCart.map((item) => {
-      if (item.bookId === bookId) {
-        item.quantity += 1;
-  
-        // Assuming bookDetails is an array of book objects
-        const matchingBook = bookDetails.find((book) => book._id === bookId);
-  
-        if (matchingBook) {
-          item.total = matchingBook.discountPrice * item.quantity;
-          console.log(matchingBook.discountPrice);
-        }
-      }
-      return item;
-    });
-  
-    const updatedBookDetails = bookDetails.map((book) => {
-      if (book._id === bookId) {
-        book.quantity += 1;
-      }
-      return book;
-    });
-  
-    // Assuming bookCart and bookDetails are state variables, update the state with the new arrays
-    setCartList(updatedCart);
-    setBookDetails(updatedBookDetails);
-    const res = await AddToCart(bookId);
+    return cartItems
+      .reduce((total, item) => total + item.discountPrice*item.quantity, 0)
+      .toFixed(1);
   };
 
+  const handleAddToCart = async (bookId) => {
+    const bookObj = cartItems.find((ele)=>ele._id==bookId);
+    console.log("Selector",bookObj);
+    dispach(addItemToCart(bookObj)); // Assuming you have a correct action creator
+  
+    const res = await AddToCart(bookId);
+  };
+  
+
   const handleRemoveFromCart = async (bookId) => {
-    const updatedCart = bookCart
-      .map((item) => {
-        if (item.bookId === bookId) {
-          if (item.quantity > 1) {
-            item.quantity -= 1;
-  
-            // Assuming bookDetails is an array of book objects
-            const matchingBook = bookDetails.find((book) => book._id === bookId);
-  
-            if (matchingBook) {
-              item.total = matchingBook.discountPrice * item.quantity;
-            }
-          } else {
-            // Remove the item from the cart if the quantity is 1 or less
-            return null;
-          }
-        }
-        return item;
-      })
-      .filter(Boolean); // Remove null entries from the array
-  
-      const updatedBookDetails = bookDetails.map((book) => {
-        if (book._id === bookId && book.quantity > 0) {
-          book.quantity -= 1;
-        }
-        return book;
-      });
-    
-      // Assuming bookCart and bookDetails are state variables, update the state with the new arrays
-      setCartList(updatedCart);
-      setBookDetails(updatedBookDetails);
-    
+
+      const bookObj = cartItems.find((ele)=>ele._id==bookId);
+      console.log("Selector remove",bookObj);
+      dispach(removeFromCart(bookObj));
       // If you have an async operation like an API call to update the cart on the server, you can add it here
       const res = await RemoveFromCart(bookId);
+      
     };
 
     const handleInputChange = (field, value) => {
@@ -158,26 +123,24 @@ const Cart = () => {
         [field]: value,
       }));
     };
-  
-  console.log(formdata);
-
+    
   return (
     <div style={{width:"75%",}}>
       <div>
         <Typography variant="h6" gutterBottom>
-          My Cart ({getTotalItems()} items)
+          My Cart ({cartItems.length} items)
         </Typography>
       </div>
       <div style={{border:"1px solid #E4E3E3" ,borderRadius:"5px"}}>
       <div className="container" style={{ display: "flex", justifyContent: "center" }}>
       <div style={{ width: "95%" }}>
-        {bookDetails.map((item) => (
+        {cartItems.map((item) => (
           <CartItem key={item._id} {...item} bookId={item._id} setCartListAdd={(bookId) => handleAddToCart(bookId)} setCartListReduce={(bookId) => handleRemoveFromCart(bookId)} />
           ))}
         </div>
       </div>
       <div style={{ marginTop: "1", textAlign: "right",marginRight:"5%" }}>
-        <Typography variant="h6">Total: RS.{getTotalPrice()}</Typography>
+        {/* <Typography variant="h6">Total: RS.{getTotalPrice()}</Typography> */}
         <Button
           variant="contained"
           color="primary"
@@ -213,7 +176,7 @@ const Cart = () => {
               </div>
             </RadioGroup>
             <div style={{ textAlign: "right",marginRight:"20px",marginTop:"2%"}}>
-            <Button variant="contained" color="primary" onClick={handlePlaceOrder} style={{ marginTop: '10px' }}>
+            <Button variant="contained" color="primary" onClick={()=>setOrderDetailsExpanded(true)} style={{ marginTop: '10px' }}>
               Place Order
             </Button>
             </div>
@@ -229,7 +192,7 @@ const Cart = () => {
         </AccordionSummary>
         <AccordionDetails>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {bookDetails.map((item) => (
+            {cartItems.map((item) => (
                <Card key={item._id} style={{ marginBottom: '10px', display: 'flex' }}>
                {/* Book Image */}
                <img src={item.bookImage} alt={item.title} style={{ width: '100px', height: '150px', objectFit: 'contain', marginRight: '10px',marginLeft:"10px" }} />

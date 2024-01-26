@@ -10,6 +10,7 @@ import { getAddress } from "../utils/AddressApi";
 
 const UserProfile = () => {
   const [formData, setFormData] = useState({});
+  const [inputData,setInputData]= useState({});
   useEffect(()=>{
     const fetchData = async ()=>{
       const addressData = await getAddress();
@@ -68,15 +69,15 @@ const UserProfile = () => {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <TextField
-            // label="Name"
+            placeholder="FullName"
             name="name"
-            value={formData.fullname}
+            value={formData?formData.fullname:""}
             onChange={handleChange}
             fullWidth
             disabled={!editPersonalDetails}
           />
           <TextField
-            // label="Email"
+            placeholder="Email"
             type="email"
             name="email"
             value="bookStore@gmail.com"
@@ -85,7 +86,7 @@ const UserProfile = () => {
             disabled={!editPersonalDetails}
           />
           <TextField
-            // label="Password"
+            placeholder="Password"
             type="password"
             // name="password"
             value="***********"
@@ -95,8 +96,9 @@ const UserProfile = () => {
           />
           <TextField
             // label="Mobile Number"
+            placeholder="Mobile No"
             name="mobileNumber"
-            value={formData.mobile}
+            value={formData?formData.mobile:""}
             onChange={handleChange}
             fullWidth
             disabled={!editPersonalDetails}
@@ -127,9 +129,9 @@ const UserProfile = () => {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <TextField
-            // label="Address"
+            placeholder="Address"
             name="address"
-            value={formData.address}
+            value={formData?formData.address:""}
             onChange={handleChange}
             fullWidth
             disabled={!editAddress}
@@ -137,17 +139,17 @@ const UserProfile = () => {
           />
           <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
             <TextField
-              // label="City"
+              placeholder="City"
               name="city"
-              value={formData.city}
+              value={formData?formData.city:""}
               onChange={handleChange}
               fullWidth
               disabled={!editAddress}
             />
             <TextField
-              // label="State"
+              placeholder="State"
               name="state"
-              value={formData.state}
+              value={formData?formData.state:""}
               onChange={handleChange}
               fullWidth
               disabled={!editAddress}

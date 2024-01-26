@@ -8,6 +8,8 @@ import AboutBook from './components/AboutBook.js';
 import Cart from './components/Cart.js';
 import Wishlist from './components/WishList.js';
 import UserProfile from './components/Profile.js';
+import OrderPlacedSuccess from './components/OrderPlaced.js';
+import MyOrders from './components/MyOrders.js';
 
 function App() {
 
@@ -24,7 +26,9 @@ function App() {
             {path: "aboutbook/:id", element: <AboutBook/>},
             {path: "cart", element: <Cart/>},
             {path:"wishlist",element:<Wishlist />},
-            {path:"profile",element:<UserProfile/>}
+            {path:"profile",element:<UserProfile/>},
+            {path:"orderplacedsuccessfully",element:<OrderPlacedSuccess />},
+            {path:"myorders",element:<MyOrders/>}
           ]
         }
       ])
