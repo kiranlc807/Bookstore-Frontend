@@ -43,14 +43,14 @@ const AboutBook = () => {
   let originalPrice = book.price;
   let ratings = 4.5;
   let description =book.description;
+  book.quantity=1;
+  console.log("AboutBook",book);
 
     const onAddToBag = async ()=>{
       const res = await AddToCart(bookId.id);
-      console.log("response",res);
       dispatch(
-        addItemToCart(res)
+        addItemToCart(book)
       )
-      console.log("AboutCart",res);
     }
 
     const onAddToWishlist = async ()=>{
