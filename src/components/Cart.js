@@ -23,12 +23,15 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { PlaceOrder } from "../utils/OrderApi";
 import { useNavigate } from "react-router-dom";
 import { setCartItems,addItemToCart,removeFromCart } from "../utils/store/CartSlice";
+import { getAddress } from "../utils/AddressApi";
+import { setAddress, addNewAddress } from "../utils/store/AddressSlice"
 
 
 const Cart = () => {
   const [bookCart,setCartList] = useState([]);
   const [bookDetails,setBookDetails] = useState([]);
   const cartItems = useSelector((store)=>store.cart.cartItems);
+  const address = useSelector((store)=>store.address.addressData)
   const [accordionExpanded, setAccordionExpanded] = useState(false);
   const [orderDetailsExpanded, setOrderDetailsExpanded] = useState(false);
   const [formdata,setFormData]=useState({
@@ -41,7 +44,7 @@ const Cart = () => {
   })
   const dispach = useDispatch();
 
-  console.log("useSelector",cartItems);
+  
   useEffect(() => {
   const fetchData = async () => {
     let cartBooks = []
@@ -123,7 +126,18 @@ const Cart = () => {
         [field]: value,
       }));
     };
+
+    useEffect(()=>{
+      const fetchData = async ()=>{
+        const addressData = await getAddress();
+        console.log("Adress",addressData);
+        dispach(setAddress(addressData))
+        // setFormData(addressData);
+      };
+      fetchData();
+    },[])
     
+    console.log("useSelector redux",address);
   return (
     <div style={{width:"75%",}}>
       <div>
@@ -160,18 +174,18 @@ const Cart = () => {
         <AccordionDetails style={{marginTop:"-20px"}}>
           <form>
             <div style={{display:"flex",flexDirection:"row",gap:"10px"}}>
-            <TextField label="Full Name" fullWidth margin="normal" onChange={(e) => handleInputChange('fullname', e.target.value)}/>
-            <TextField label="Mobile Number" fullWidth margin="normal" onChange={(e) => handleInputChange('mobile', e.target.value)}/>
+            <TextField label="Full Name"  fullWidth margin="normal" onChange={(e) => handleInputChange('fullname', e.target.value)}/>
+            <TextField label="Mobile Number"  fullWidth margin="normal" onChange={(e) => handleInputChange('mobile', e.target.value)}/>
             </div>
-            <TextField label="Address" fullWidth multiline rows={3} margin="normal" onChange={(e) => handleInputChange('address', e.target.value)} />
+            <TextField label="Address"  fullWidth multiline rows={3} margin="normal" onChange={(e) => handleInputChange('address', e.target.value)} />
             <div style={{display:"flex",flexDirection:"row",gap:"10px"}}>
-            <TextField label="City" fullWidth margin="normal" onChange={(e) => handleInputChange('city', e.target.value)}/>
-            <TextField label="State" fullWidth margin="normal" onChange={(e) => handleInputChange('state', e.target.value)}/>
+            <TextField label="City"  fullWidth margin="normal" onChange={(e) => handleInputChange('city', e.target.value)}/>
+            <TextField label="State"  fullWidth margin="normal" onChange={(e) => handleInputChange('state', e.target.value)}/>
             </div>
             <div style={{display:"flex",flexDirection:"row",gap:"56%"}}>
             <RadioGroup>
               <div style={{display:"flex",flexDirection:"row",gap:"10px",marginLeft:"15px"}}>
-              <FormControlLabel value="work" control={<Radio />} label="Work Address" onChange={(e) => handleInputChange('type', e.target.value)}/>
+              <FormControlLabel value="work"  control={<Radio />} label="Work Address" onChange={(e) => handleInputChange('type', e.target.value)}/>
               <FormControlLabel value="home" control={<Radio />} label="Home Address" onChange={(e) => handleInputChange('type', e.target.value)}/>
               </div>
             </RadioGroup>

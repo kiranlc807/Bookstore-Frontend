@@ -13,7 +13,7 @@ export const getAddress =async ()=>{
     return res.data.data;
 };
 
-export const addAddress = async()=>{
+export const addAddress = async(data)=>{
     const token = localStorage.getItem('Authorization');
 
     const config = {
@@ -22,6 +22,6 @@ export const addAddress = async()=>{
             'Content-Type': 'application/json',
         },
     };
-    const res = await axios.post(`http://localhost:3000/api/v1/address`,config);
+    const res = await axios.post(`http://localhost:3000/api/v1/address`,data,config);
     return res.data.data;
 }
