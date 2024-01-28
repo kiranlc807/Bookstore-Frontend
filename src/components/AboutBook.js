@@ -18,6 +18,7 @@ import { AddToWishlist,RemoveWishList } from "../utils/WishListApi";
 import { useDispatch,useSelector } from "react-redux";
 import { addItemToCart } from "../utils/store/CartSlice";
 import { addItemToWishlist } from "../utils/store/WishListSlice";
+import "../css/AboutBook.css"
 
 const AboutBook = () => {
   const bookId = useParams();
@@ -80,15 +81,8 @@ const AboutBook = () => {
     };
 
   return (
-    <div style={{
-    display:"flex",
-    flexDirection:"column",
-    justifyContent:"center",
-    width:"968px",
-    height:"585px",
-    marginTop:"20px"
-    }}>
-      <div style={{ display: "flex", justifyContent: "center",gap:"20px"}}>
+    <div className="outer-div">
+      <div className="innerleft-div">
         <div style={{ marginRight: "10px", width: "30%"}}>
           <CardMedia
             component="img"
@@ -102,16 +96,7 @@ const AboutBook = () => {
               borderRadius: "2px",
             }}
           />
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              gap: "30px",
-              marginTop: "20px",
-              objectFit:"contain"
-            }}
-          >
+          <div className="innerleft-button">
             <Button
               variant="contained"
               color="primary"
@@ -130,7 +115,7 @@ const AboutBook = () => {
             </Button>
           </div>
         </div>
-        <div style={{ flex: 1 }}>
+        <div className="innerright-div">
           <Typography variant="h5">{title}</Typography>
           <Typography variant="subtitle1" color="textSecondary" gutterBottom>
             by {author}

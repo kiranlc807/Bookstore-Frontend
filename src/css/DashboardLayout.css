@@ -1,0 +1,11 @@
+.header-container{
+    display: flex;
+}
+
+.outlet-container{
+    display: flex;
+    margin-top: 70px;
+    justify-content: center;
+    margin-left: 15%;
+    margin-right: 12%;
+}

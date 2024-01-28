@@ -1,0 +1,24 @@
+.outerAdressCard-div{
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    position: relative;
+}
+
+.formGroup-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* style={{ display: "flex", flexDirection: "row", alignItems: "flex-start", gap: "10px", position: "absolute", top: 0, left: 0 }} */
+  }
+
+.address-city-state{
+    /* style={{ display: "flex", flexDirection: "row", gap: "10px" }} */
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}

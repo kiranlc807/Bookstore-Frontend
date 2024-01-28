@@ -1,0 +1,6 @@
+.main-container{
+    /* style={{ width: "35%", marginLeft: "20%", objectFit: "contain" }} */
+    width: 35%;
+    margin-left: 20%;
+    object-fit: contain;
+}

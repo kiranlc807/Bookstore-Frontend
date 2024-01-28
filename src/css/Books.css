@@ -1,0 +1,29 @@
+.outer-div{
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.inner-sort-div{
+    overflow: auto;
+    box-sizing: border-box;
+    float: right;
+}
+
+.bookcard-div{
+    padding-top: 16px;
+    overflow: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 60px;
+    box-sizing: border-box;
+    padding-left: 30px;
+    padding-bottom: 3%;
+}
+
+.page-div{
+    margin-top: 20px;
+    text-align: center;
+    padding-bottom: 20px;
+    margin-bottom: 3%;
+}

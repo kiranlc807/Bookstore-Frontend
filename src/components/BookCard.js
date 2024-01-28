@@ -1,5 +1,5 @@
 import React from "react";
-import "./BookCard.css"
+import "../css/BookCard.css"
 import {
   Card,
   CardContent,
@@ -7,7 +7,7 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import "./Login.css";
+import "../css/Login.css"
 import { useNavigate } from "react-router-dom";
 
 const BookCard = ({bookObj}) => {
@@ -28,10 +28,9 @@ const BookCard = ({bookObj}) => {
       className="BookCard" // we need add only for css file hover property 
       onClick={() => handleNavigate(bookObj._id)}
     >
-      <Card sx={{height:"100%",width:"200px",height:"280px",objectFit:"contain"}}>
+      <Card className="card">
         <CardMedia
           component="img"
-          height="100"
           image={imageUrl}
           alt={title}
           sx={{ width: "100%", display: "felx",objectFit:"contain", backgroundColor:"#ECEAEA",height:"50%"}}

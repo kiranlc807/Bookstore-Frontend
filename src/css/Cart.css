@@ -1,0 +1,49 @@
+.main-div{
+    width: 75%;
+}
+
+.cart-container{
+    /* style={{border:"1px solid #E4E3E3" ,borderRadius:"5px"}} */
+    border: 1px solid #E4E3E3;
+    border-radius: 5px;
+}
+
+.cart-container-innerBox{
+    /* style={{ display: "flex", justifyContent: "center" }} */
+    display: flex;
+    justify-content: center;
+}
+
+.cart-container-cartCard{
+    /* style={{ width: "95%",marginTop:"5px" }} */
+    width: 95%;
+    margin-top: 5px;
+}
+
+.cart-container-button{
+    /* style={{ marginTop: "1", textAlign: "right",marginRight:"5%" }} */
+    margin-top: 1;
+    text-align: right;
+    margin-right: 5%;
+}
+
+.form-div-fullname-mobile{
+    /* style={{display:"flex",flexDirection:"row",gap:"10px"}} */
+    display: flex;
+    flex-direction:row ;
+    gap: 10px;
+}
+
+.form-div-city-state{
+    /* style={{display:"flex",flexDirection:"row",gap:"10px"}} */
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.orderdetails-div{
+    /* style={{ display: 'flex', flexDirection: 'column', gap: '10px' }} */
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
