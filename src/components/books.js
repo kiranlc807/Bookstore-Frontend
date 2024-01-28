@@ -110,6 +110,7 @@ import { GetAllBook } from "../utils/BookApi";
 import { useDispatch, useSelector } from "react-redux";
 import { addBooks } from "../utils/store/BookSlice";
 import { setCartItems } from "../utils/store/CartSlice";
+import "../css/Books.css"
 
 const Books = () => {
   const [sortAnchorEl, setSortAnchorEl] = useState(null);
@@ -175,9 +176,8 @@ const Books = () => {
   const currentBooks = bookList.slice(startIndex, endIndex);
 
   return (
-    
         <div style={{ paddingTop: "10px", display: "flex", flexDirection: "column" }}>
-          <div style={{ overflow: "auto", boxSizing: "border-box", float: "right" }}>
+          <div className="inner-sort-div">
             <Button
               variant="outlined"
               color="inherit"
@@ -191,25 +191,12 @@ const Books = () => {
               <MenuItem onClick={() => sortBy("highToLow")}>High to Low</MenuItem>
             </Menu>
           </div>
-          <div
-            style={{
-              // marginRight:"12%",
-              // marginLeft:"15%",
-              paddingTop: "16px",
-              overflow: "auto",
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "60px",
-              boxSizing: "border-box",
-              paddingLeft: "30px",
-              paddingBottom: "3%"
-            }}
-          >
+          <div className="bookcard-div">
             {currentBooks.map((book) => (
               <BookCard key={book._id} bookObj={book} />
             ))}
           </div>
-          <div style={{ marginTop: "20px", textAlign: "center", paddingBottom: "20px", marginBottom: "3%" }}>
+          <div className="page-div">
             {Array.from({ length: totalPages }).map((_, index) => (
               <Button
                 key={index}
@@ -227,7 +214,6 @@ const Books = () => {
             ))}
           </div>
         </div>
-    
   );
 };
 

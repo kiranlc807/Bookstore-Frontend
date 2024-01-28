@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import { setCartItems,addItemToCart,removeFromCart } from "../utils/store/CartSlice";
 import { getAddress } from "../utils/AddressApi";
 import { setAddress, addNewAddress } from "../utils/store/AddressSlice"
+import "../css/Cart.css"
 
 
 const Cart = () => {
@@ -139,21 +140,21 @@ const Cart = () => {
     
     console.log("useSelector redux",address);
   return (
-    <div style={{width:"75%",}}>
+    <div className="main-div">
       <div>
         <Typography variant="h6" gutterBottom>
           My Cart ({cartItems.length} items)
         </Typography>
       </div>
-      <div style={{border:"1px solid #E4E3E3" ,borderRadius:"5px"}}>
-      <div className="container" style={{ display: "flex", justifyContent: "center" }}>
-      <div style={{ width: "95%" }}>
+      <div className="cart-container">
+      <div className="cart-container-innerBox" >
+      <div className="cart-container-cartCard">
         {cartItems.map((item) => (
           <CartItem key={item._id} {...item} bookId={item._id} setCartListAdd={(bookId) => handleAddToCart(bookId)} setCartListReduce={(bookId) => handleRemoveFromCart(bookId)} />
           ))}
         </div>
       </div>
-      <div style={{ marginTop: "1", textAlign: "right",marginRight:"5%" }}>
+      <div className="cart-container-button">
         {/* <Typography variant="h6">Total: RS.{getTotalPrice()}</Typography> */}
         <Button
           variant="contained"
@@ -173,12 +174,12 @@ const Cart = () => {
         </AccordionSummary>
         <AccordionDetails style={{marginTop:"-20px"}}>
           <form>
-            <div style={{display:"flex",flexDirection:"row",gap:"10px"}}>
+            <div className="form-div-fullname-mobile">
             <TextField label="Full Name"  fullWidth margin="normal" onChange={(e) => handleInputChange('fullname', e.target.value)}/>
             <TextField label="Mobile Number"  fullWidth margin="normal" onChange={(e) => handleInputChange('mobile', e.target.value)}/>
             </div>
             <TextField label="Address"  fullWidth multiline rows={3} margin="normal" onChange={(e) => handleInputChange('address', e.target.value)} />
-            <div style={{display:"flex",flexDirection:"row",gap:"10px"}}>
+            <div className="form-div-city-state">
             <TextField label="City"  fullWidth margin="normal" onChange={(e) => handleInputChange('city', e.target.value)}/>
             <TextField label="State"  fullWidth margin="normal" onChange={(e) => handleInputChange('state', e.target.value)}/>
             </div>
@@ -205,7 +206,7 @@ const Cart = () => {
           <Typography variant="h6">Order Details</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div className="orderdetails-div">
             {cartItems.map((item) => (
                <Card key={item._id} style={{ marginBottom: '10px', display: 'flex' }}>
                {/* Book Image */}

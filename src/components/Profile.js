@@ -161,6 +161,7 @@ import AddressForm from "./CreateAddress";
 import { useDispatch, useSelector } from "react-redux";
 import { setAddress } from "../utils/store/AddressSlice";
 import { addAddress, getAddress } from "../utils/AddressApi";
+import "../css/Profile.css"
 
 const UserProfile = () => {
   const [formData, setFormData] = useState({});

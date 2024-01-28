@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, TextField } from "@mui/material";
-import "./Login.css"; // Create a separate CSS file for styling
+import "../css/Login.css"; // Create a separate CSS file for styling
 import { useNavigate } from "react-router-dom";
 import { LoginApi,SignupApi } from "../utils/userapi";
 import image from '../assets/bookstore-logo.png'
@@ -36,10 +36,6 @@ const AuthComponent = () => {
     <div className="auth-container">
       <div
         className="centered-container"
-        style={{
-          display: "flex",
-          flexDirection: "row",
-        }}
       >
         <div className="image-container">
           <img
@@ -54,13 +50,6 @@ const AuthComponent = () => {
         <div className="form-container" >
           <div
             className="button-container"
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "30px",
-              marginTop: "10px",
-              justifyContent: "center",
-            }}
           >
             <Button
               variant="text"
@@ -79,13 +68,7 @@ const AuthComponent = () => {
           </div>
           {authType === "login" ? (
             <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "10px",
-                padding: "30px",
-                height: "80%",
-              }}
+            className = "login-container"
             >
               <TextField
                 label="Email"
@@ -125,12 +108,7 @@ const AuthComponent = () => {
             </div>
           ) : (
             <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "10px",
-                padding: "30px",
-              }}
+              className="signup-container"
             >
               <TextField
                 label="Full Name"
@@ -168,3 +146,8 @@ const AuthComponent = () => {
 };
 
 export default AuthComponent;
+
+
+
+
+

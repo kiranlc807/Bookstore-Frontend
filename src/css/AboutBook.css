@@ -1,0 +1,27 @@
+.outer-div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 968px;
+    height: 585px;
+    margin-top: 20px;
+}
+
+.innerleft-div{
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.innerleft-button{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+    object-fit: contain;
+}
+
+.innerright-div{
+    flex: 1;
+}

@@ -159,6 +159,7 @@ import {
   TextField,
   Checkbox,
 } from "@mui/material";
+import "../css/AddressCard.css"
 
 const AddressComponent = ({
   _id,
@@ -173,9 +174,9 @@ const AddressComponent = ({
 }) => {
   console.log("ID",_id);
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "40px", position: "relative" }}>
+    <div className="outerAdressCard-div">
       <div>
-        <FormGroup style={{ display: "flex", flexDirection: "row", alignItems: "flex-start", gap: "10px", position: "absolute", top: 0, left: 0 }}>
+        <FormGroup className="formGroup-container">
           <RadioGroup
             row
             name="bookId"
@@ -201,7 +202,7 @@ const AddressComponent = ({
         disabled={!editAddress}
         sx={{ height: "50px" }}
       />
-      <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+      <div className="address-city-state">
         <TextField
           placeholder="City"
           name="city"
