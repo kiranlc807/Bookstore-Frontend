@@ -10,6 +10,7 @@ import { GetBookByID } from "../utils/BookApi";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setWishlistItems,addItemToWishlist } from "../utils/store/WishListSlice";
+import "../css/WishList.css"
 
 const WishlistItem = ({ bookName, author, discountPrice, bookImage, onRemove,bookId }) => {
   
@@ -83,7 +84,7 @@ const Wishlist = () => {
   };
 
   return (
-    <div style={{width:"75%"}}>
+    <div className="main-div">
       <Typography variant="h6" gutterBottom>
         Wishlist ({wishlistCount} items)
       </Typography>

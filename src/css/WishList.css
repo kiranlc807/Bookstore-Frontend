@@ -1,0 +1,11 @@
+.main-div{
+    /* style={{width:"75%"}} */
+    width: 75%;
+}
+
+@media screen and (max-width: 600px) {
+    .main-div{
+        width: 100%;
+    }
+    
+}

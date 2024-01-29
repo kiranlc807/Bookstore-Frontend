@@ -5,3 +5,9 @@
     height: 160px;
     margin-bottom: 16px;
 }
+
+@media screen and (max-width: 768px) {
+    .main-card { /* Stack elements vertically for smaller screens */
+      height: 180px; /* Allow height to adjust based on content */
+    }
+  }
