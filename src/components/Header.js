@@ -184,7 +184,9 @@ import { useDispatch } from "react-redux";
 import { setCartItems,addItemToCart,removeFromCart } from "../utils/store/CartSlice";
 import { AddToCart, GetCartItem } from "../utils/CartApi";
 import { GetBookByID } from "../utils/BookApi";
-import {fetchBookByText} from "../utils/BookApi"
+import {fetchBookByText} from "../utils/BookApi";
+import { setAddress } from "../utils/store/AddressSlice";
+import { addAddress, getAddress } from "../utils/AddressApi";
 
 const theme = createTheme();
 
@@ -196,7 +198,7 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     alignItems: "center",
     marginLeft: "7%",
-    cursor:"pointer"
+    cursor:"pointer",
   },
   search: {
     display: "flex",
@@ -230,7 +232,7 @@ const useStyles = makeStyles(() => ({
     marginLeft: "auto",
     display: "flex",
     alignItems: "center",
-    gap: "16px",
+    gap: "20px",
     marginRight: "10%",
   },
   accountImage:{
@@ -331,6 +333,13 @@ const Header = () => {
     }, []);
 
 
+    useEffect(() => {
+      const fetchData = async () => {
+        const addressData = await getAddress();
+        dispach(setAddress(addressData));
+      };
+      fetchData();
+    }, [dispach]);
 
 
 
@@ -432,8 +441,9 @@ const Header = () => {
                 Logout
               </MenuItem>
             </Menu>
-            <IconButton color="inherit" onClick={handleCart}>
-              <Badge badgeContent={1} color="secondary">
+            
+            <IconButton color="inherit" onClick={handleCart} >
+              <Badge badgeContent={0} color="secondary">
               <img src={cartIcon} className={classes.cartImage}></img>
               </Badge>
             </IconButton>

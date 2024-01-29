@@ -5,9 +5,20 @@
     margin-bottom: 5%;
 }
 
+.address-div{
+  /* style={{ display: "flex", flexDirection: "row", gap: "55%" }} */
+  display: flex;
+  flex-direction: row;
+  gap:55%
+}
+
 @media screen and (max-width: 600px) {
     .main-container {
       width: 100%; /* Adjust width for smaller screens */
        margin-left: 0; /*Remove left margin for smaller screens */
+    }
+
+    .address-div{
+      gap:34%
     }
   } 
