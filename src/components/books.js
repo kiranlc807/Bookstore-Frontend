@@ -123,19 +123,19 @@ const Books = () => {
 
   const dispach = useDispatch();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let booksResponse = await GetAllBook();
-        // setBookList(booksResponse);
-        console.log("BookDetails",booksResponse);
-        dispach(addBooks(booksResponse))
-      } catch (error) {
-        console.error("Error fetching books:", error);
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       let booksResponse = await GetAllBook();
+  //       // setBookList(booksResponse);
+  //       console.log("BookDetails",booksResponse);
+  //       dispach(addBooks(booksResponse))
+  //     } catch (error) {
+  //       console.error("Error fetching books:", error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   const handleSortClick = (event) => {
     setSortAnchorEl(event.currentTarget);

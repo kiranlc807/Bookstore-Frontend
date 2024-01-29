@@ -24,7 +24,7 @@
     /* style={{ marginTop: "1", textAlign: "right",marginRight:"5%" }} */
     margin-top: 1;
     text-align: right;
-    margin-right: 5%;
+    margin-right: 4%;
 }
 
 .form-div-fullname-mobile{
@@ -47,3 +47,31 @@
     flex-direction: column;
     gap:10px;
 }
+
+.customerdetail-button{
+    /* style={{display:"flex",flexDirection:"row",gap:"56%"}} */
+    display: flex;
+    flex-direction: row;
+    gap: 42%;
+}
+
+@media screen and (max-width: 768px) {
+    .main-div {
+      width: 100%; /* Adjust width for smaller screens */
+    }
+  
+    .cart-container-button {
+      margin-right: 15px; /* Remove right margin for smaller screens */ /* Center the button for smaller screens */
+    }
+  
+    .form-div-fullname-mobile,
+    .form-div-city-state {
+      flex-direction: column; /* Stack elements vertically for smaller screens */
+      gap: 10px; /* Adjust gap for smaller screens */
+    }
+
+    .customerdetail-button{
+        flex-direction: column;
+        gap:10px;
+    }
+  }

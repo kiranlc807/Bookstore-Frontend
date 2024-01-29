@@ -22,13 +22,16 @@ const BookCard = ({bookObj}) => {
   const handleNavigate=(bookId)=>{
         route(`/dashboard/aboutbook/${bookId}`);   
   }
-
+  console.log("BookObj",bookObj);
   return (
     <div
       className="BookCard" // we need add only for css file hover property 
       onClick={() => handleNavigate(bookObj._id)}
     >
       <Card className="card">
+      {bookObj.quantity <= 0 && (
+      <div className="out-of-stock-message">Out of Stock</div>
+    )}
         <CardMedia
           component="img"
           image={imageUrl}

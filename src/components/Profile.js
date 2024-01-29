@@ -210,7 +210,8 @@ const UserProfile = () => {
   };
 
   return (
-    <Container style={{ width: "35%", marginLeft: "20%", objectFit: "contain" }}>
+    <div className="main-container">
+    <Container  >
       <Box sx={{ marginBottom: "40px" }}>
       <div style={{ display: "flex", flexDirection: "row", gap: "45%" }}>
            <h2>Personal Details </h2>
@@ -300,6 +301,7 @@ const UserProfile = () => {
         {addAddress && <AddressForm handleSave={() => setAddAddress(false)} />}
       </Box>
     </Container>
+    </div>
   );
 };
 

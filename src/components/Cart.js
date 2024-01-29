@@ -29,8 +29,6 @@ import "../css/Cart.css"
 
 
 const Cart = () => {
-  const [bookCart,setCartList] = useState([]);
-  const [bookDetails,setBookDetails] = useState([]);
   const cartItems = useSelector((store)=>store.cart.cartItems);
   const address = useSelector((store)=>store.address.addressData)
   const [accordionExpanded, setAccordionExpanded] = useState(false);
@@ -45,45 +43,6 @@ const Cart = () => {
   })
   const dispach = useDispatch();
 
-  
-  useEffect(() => {
-  const fetchData = async () => {
-    let cartBooks = []
-    try {
-      cartBooks = await GetCartItem();
-      // Extract bookIds and quantities from cartItems
-      const bookIdQuantityMap = cartBooks.reduce((map, cartItem) => {
-        map[cartItem.bookId] = cartItem.quantity;
-        return map;
-      }, {});
-
-      // Fetch details for each bookId
-      const bookDetailsPromises = cartBooks.map(async (cartItem) => {
-        let book = await GetBookByID(cartItem.bookId);
-        // Add the quantity from the cart item to the book details
-        return { ...book, quantity: bookIdQuantityMap[book._id] };
-      });
-
-      // Wait for all book details promises to resolve
-      const resolvedBookDetails = await Promise.all(bookDetailsPromises);
-
-        // Update state with the book details
-        setBookDetails(resolvedBookDetails);
-        
-        
-
-        // Update state with the cart items
-        setCartList(cartBooks);
-        // debugger
-        dispach(setCartItems(resolvedBookDetails));
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-
-    };
-    fetchData();
-  }, []);
-
     const route = useNavigate();
   const handlePlaceOrder = async() => {
     const res = await PlaceOrder(formdata);
@@ -92,9 +51,6 @@ const Cart = () => {
     
   };
 
-  // const getTotalItems = () => {
-  //   return bookCart.reduce((total, item) => total + item.quantity, 0);
-  // };
 
   const getTotalPrice = () => {
     return cartItems
@@ -168,6 +124,7 @@ const Cart = () => {
       </div>
 
        {/* Accordion for placing order */}
+       <div style={{objectFit:"contain",}}>
        <Accordion expanded={accordionExpanded} style={{ marginTop: '10px'}}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} onClick={() => setAccordionExpanded(!accordionExpanded)}>
           <Typography variant="h6">Customer Details</Typography>
@@ -183,14 +140,14 @@ const Cart = () => {
             <TextField label="City"  fullWidth margin="normal" onChange={(e) => handleInputChange('city', e.target.value)}/>
             <TextField label="State"  fullWidth margin="normal" onChange={(e) => handleInputChange('state', e.target.value)}/>
             </div>
-            <div style={{display:"flex",flexDirection:"row",gap:"56%"}}>
+            <div className="customerdetail-button">
             <RadioGroup>
               <div style={{display:"flex",flexDirection:"row",gap:"10px",marginLeft:"15px"}}>
               <FormControlLabel value="work"  control={<Radio />} label="Work Address" onChange={(e) => handleInputChange('type', e.target.value)}/>
               <FormControlLabel value="home" control={<Radio />} label="Home Address" onChange={(e) => handleInputChange('type', e.target.value)}/>
               </div>
             </RadioGroup>
-            <div style={{ textAlign: "right",marginRight:"20px",marginTop:"2%"}}>
+            <div style={{ textAlign: "right",marginTop:"2%"}}>
             <Button variant="contained" color="primary" onClick={()=>setOrderDetailsExpanded(true)} style={{ marginTop: '10px' }}>
               Place Order
             </Button>
@@ -199,6 +156,7 @@ const Cart = () => {
           </form>
         </AccordionDetails>
       </Accordion>
+      </div>
 
         {/* Accordion for order details */}
         <Accordion expanded={orderDetailsExpanded} style={{ marginTop: '10px',marginBottom:"50px" }}>

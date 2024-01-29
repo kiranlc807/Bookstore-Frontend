@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: center;
     width: 968px;
-    height: 585px;
+    height: auto;
     margin-top: 20px;
 }
 
@@ -25,3 +25,28 @@
 .innerright-div{
     flex: 1;
 }
+
+.innerleft-div-image{
+  /* style={{ marginRight: "10px", width: "30%"}} */
+  margin-right: 20px;
+  width: 30%;
+}
+
+@media screen and (max-width: 600px) {
+    .innerleft-div {
+      flex-direction: column;
+    }
+  
+    .innerleft-button {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .innerright-div {
+      width: 100%; /* Adjust width for smaller screens */
+    }
+
+    .innerleft-div-image{
+      width: 100%;
+    }
+  }

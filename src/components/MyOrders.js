@@ -73,7 +73,7 @@ const MyOrders = () => {
 
   console.log("in component",orders);
   return (
-    <div style={{width:"90%"}}>
+    <div style={{width:"75%"}}>
       <div style={{width:"100%"}}> 
         {orders.map((order) => (
           <div key={order._id}>

@@ -175,6 +175,16 @@ import { Book, AccountCircle, ShoppingCart, Search } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 import { useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import accountIcon from "../assets/accountIcon.svg"
+import cartIcon from "../assets/cartIcon.svg";
+import { addBooks } from "../utils/store/BookSlice";
+import { GetAllBook } from "../utils/BookApi";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setCartItems,addItemToCart,removeFromCart } from "../utils/store/CartSlice";
+import { AddToCart, GetCartItem } from "../utils/CartApi";
+import { GetBookByID } from "../utils/BookApi";
+import {fetchBookByText} from "../utils/BookApi"
 
 const theme = createTheme();
 
@@ -186,6 +196,7 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     alignItems: "center",
     marginLeft: "7%",
+    cursor:"pointer"
   },
   search: {
     display: "flex",
@@ -219,8 +230,42 @@ const useStyles = makeStyles(() => ({
     marginLeft: "auto",
     display: "flex",
     alignItems: "center",
-    gap: 16,
-    marginRight: "8%",
+    gap: "16px",
+    marginRight: "10%",
+  },
+  accountImage:{
+    height:"30px",
+  },
+  cartImage:{
+    height:"26px"
+  },
+  '@media (max-width: 600px)': {
+    title: {
+      marginLeft: '0%',
+       // Adjust the margin for smaller screens
+    },
+    search: {
+      width: '50%', // Adjust the width of the search bar for smaller screens
+    },
+    profileAndCart: {
+      marginRight: '0%', // Adjust the margin for smaller screens
+    },
+    searchIcon:{
+      marginLeft:"-10px"
+    },
+    search:{
+
+    },
+    inputRoot:{
+      width:"90%"
+    },
+    inputInput:{
+      width:"90%"
+    },
+    profileAndCart:{
+      gap:"5px",
+      marginRight:"0%"
+    }
   },
 }));
 
@@ -229,6 +274,69 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const route = useNavigate();
+
+  const dispach = useDispatch();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let booksResponse = await GetAllBook();
+        // setBookList(booksResponse);
+        console.log("BookDetails",booksResponse);
+        dispach(addBooks(booksResponse))
+      } catch (error) {
+        console.error("Error fetching books:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let cartBooks = []
+      try {
+        cartBooks = await GetCartItem();
+        // Extract bookIds and quantities from cartItems
+        const bookIdQuantityMap = cartBooks.reduce((map, cartItem) => {
+          map[cartItem.bookId] = cartItem.quantity;
+          return map;
+        }, {});
+  
+        // Fetch details for each bookId
+        const bookDetailsPromises = cartBooks.map(async (cartItem) => {
+          let book = await GetBookByID(cartItem.bookId);
+          // Add the quantity from the cart item to the book details
+          return { ...book, quantity: bookIdQuantityMap[book._id] };
+        });
+  
+        // Wait for all book details promises to resolve
+        const resolvedBookDetails = await Promise.all(bookDetailsPromises);
+  
+          // Update state with the book details
+          // setBookDetails(resolvedBookDetails);
+          
+          
+  
+          // Update state with the cart items
+          // setCartList(cartBooks);
+          // debugger
+          dispach(setCartItems(resolvedBookDetails));
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+  
+      };
+      fetchData();
+    }, []);
+
+
+
+
+
+
+
+
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -248,13 +356,18 @@ const Header = () => {
     setAnchorEl(null);
   };
 
-  const handleSearchChange = (event) => {
+  const handleSearchChange = async (event) => {
     setSearchQuery(event.target.value);
+    if(event.target.value==""){
+      const res = await fetchBookByText({bookName:""})
+      dispach(addBooks(res))
+    }
   };
 
-  const handleSearchSubmit = () => {
+  const handleSearchSubmit = async() => {
     console.log("Search Query:", searchQuery);
-    // Add your search logic here
+    const res = await fetchBookByText({bookName:searchQuery})
+    dispach(addBooks(res))
   };
 
   const handleCart = () => {
@@ -299,7 +412,7 @@ const Header = () => {
 
           <div className={classes.profileAndCart}>
             <IconButton color="inherit" onClick={handleProfileMenuOpen}>
-              <AccountCircle />
+              <img src={accountIcon} className={classes.accountImage}></img>
             </IconButton>
             <Menu
               anchorEl={anchorEl}
@@ -320,8 +433,8 @@ const Header = () => {
               </MenuItem>
             </Menu>
             <IconButton color="inherit" onClick={handleCart}>
-              <Badge badgeContent={0} color="secondary">
-                <ShoppingCart />
+              <Badge badgeContent={1} color="secondary">
+              <img src={cartIcon} className={classes.cartImage}></img>
               </Badge>
             </IconButton>
           </div>

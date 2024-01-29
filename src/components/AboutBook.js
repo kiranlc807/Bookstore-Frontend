@@ -16,8 +16,9 @@ import { useEffect } from "react";
 import { AddToCart } from "../utils/CartApi";
 import { AddToWishlist,RemoveWishList } from "../utils/WishListApi";
 import { useDispatch,useSelector } from "react-redux";
-import { addItemToCart } from "../utils/store/CartSlice";
-import { addItemToWishlist } from "../utils/store/WishListSlice";
+import { addItemToCart ,removeFromCart} from "../utils/store/CartSlice";
+import { addItemToWishlist, } from "../utils/store/WishListSlice";
+import {RemoveFromCart} from "../utils/CartApi";
 import "../css/AboutBook.css"
 
 const AboutBook = () => {
@@ -25,7 +26,18 @@ const AboutBook = () => {
   const [book,setBook] = useState({});
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+  const cartItems = useSelector((store)=>store.cart.cartItems);
+  const cartBook = cartItems.find((books)=>books.bookName==book.bookName)
+  const [quantite, setQuantity] = useState(0);
   const wishlistBooks = useSelector((store)=>store.wishlist.wishlistItems)
+   
+  useEffect(() => {
+    if (cartBook) {
+      setQuantity(cartBook.quantity);
+      console.log(quantite);
+    }
+  }, [cartBook]);
+  
   const dispatch = useDispatch();
   
   useEffect(() => {
@@ -49,6 +61,7 @@ const AboutBook = () => {
 
     const onAddToBag = async ()=>{
       const res = await AddToCart(bookId.id);
+      setQuantity((prevQuantity) => prevQuantity + 1);
       dispatch(
         addItemToCart(book)
       )
@@ -63,6 +76,20 @@ const AboutBook = () => {
         const res = await RemoveWishList(bookId.id);
       }
     }
+
+    const handleIncreaseQuantity = () => {
+      onAddToBag();
+      setQuantity(cartBook[0].quantity);
+    };
+  
+    const handleDecreaseQuantity = async() => {
+      if (quantite > 0) {
+        dispatch(removeFromCart(book));
+        setQuantity((prevQuantity) => prevQuantity - 1);
+        const res = await RemoveFromCart(bookId.id);
+      }
+      
+    };
 
     const handleRatingChange = (event, value) => {
       setRating(value);
@@ -80,10 +107,12 @@ const AboutBook = () => {
       // You can also add further actions like sending the review to the server, etc.
     };
 
+    
+
   return (
     <div className="outer-div">
       <div className="innerleft-div">
-        <div style={{ marginRight: "10px", width: "30%"}}>
+        <div className="innerleft-div-image">
           <CardMedia
             component="img"
             height="400"
@@ -97,7 +126,7 @@ const AboutBook = () => {
             }}
           />
           <div className="innerleft-button">
-            <Button
+            {/* <Button
               variant="contained"
               color="primary"
               onClick={onAddToBag}
@@ -112,7 +141,57 @@ const AboutBook = () => {
               style={{ marginTop: "10px", backgroundColor: "#333232" }}
             >
               Wishlist
+            </Button> */}
+          <div className="innerleft-button">
+          {quantite > 0 ? (
+            <div style={{display:"flex",flexDirection:"row",gap:"10px"}}>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleDecreaseQuantity}
+                style={{
+                  marginTop: "10px",
+                  border: "1px solid #900000",color:"#900000",
+                  borderRadius:"50%"
+                }}
+              >
+                -
+              </Button>
+              <Typography
+                variant="subtitle1"
+                color="textSecondary"
+                style={{ marginTop: "15px"}}
+              >
+                {quantite}
+              </Typography>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleIncreaseQuantity}
+                style={{ marginTop: "10px", border: "1px solid #900000",color:"#900000",borderRadius:"50%" }}
+              >
+                +
+              </Button>
+            </div>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={onAddToBag}
+              style={{ marginTop: "10px", backgroundColor: "#900000" }}
+            >
+              Add to Bag
             </Button>
+          )}
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={onAddToWishlist}
+            style={{ marginTop: "10px", backgroundColor: "#333232" }}
+          >
+            Wishlist
+          </Button>
+        </div>
           </div>
         </div>
         <div className="innerright-div">
