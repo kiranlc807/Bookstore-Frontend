@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BASE_URL } from "./helper";
 
 export const GetCartItem = async()=>{
     const token = localStorage.getItem('Authorization');
@@ -9,7 +10,7 @@ export const GetCartItem = async()=>{
             'Content-Type': 'application/json',
         },
     };
-    const res = await axios.get("http://localhost:3000/api/v1/cart",config)
+    const res = await axios.get(`${BASE_URL}/api/v1/cart`,config)
     return res.data.data;
 }
 
@@ -23,7 +24,7 @@ export const AddToCart = async(bookId)=>{
         },
     };
     console.log(bookId);
-    const res = await axios.post(`http://localhost:3000/api/v1/cart/${bookId}`,null,config);
+    const res = await axios.post(`${BASE_URL}/api/v1/cart/${bookId}`,null,config);
     console.log("Added cart data",res.data.data);
     return res.data.data;
 }
@@ -38,6 +39,6 @@ export const RemoveFromCart = async(bookId)=>{
         },
     };
     console.log(bookId);
-    const res = await axios.put(`http://localhost:3000/api/v1/cart/reduce/${bookId}`,null,config);
+    const res = await axios.put(`${BASE_URL}/api/v1/cart/reduce/${bookId}`,null,config);
     return res.data.data;
 }

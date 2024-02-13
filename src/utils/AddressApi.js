@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BASE_URL } from "./helper";
 
 export const getAddress =async ()=>{
     const token = localStorage.getItem('Authorization');
@@ -9,7 +10,7 @@ export const getAddress =async ()=>{
             'Content-Type': 'application/json',
         },
     };
-    const res = await axios.get(`http://localhost:3000/api/v1/address`,config);
+    const res = await axios.get(`${BASE_URL}/api/v1/address`,config);
     return res.data.data;
 };
 
@@ -22,7 +23,7 @@ export const addAddress = async(data)=>{
             'Content-Type': 'application/json',
         },
     };
-    const res = await axios.post(`http://localhost:3000/api/v1/address`,data,config);
+    const res = await axios.post(`${BASE_URL}/api/v1/address`,data,config);
     return res.data.data;
 }
 
@@ -35,7 +36,7 @@ export const setDefault = async(addressId)=>{
             'Content-Type': 'application/json',
         },
     };
-    const res = await axios.put('http://localhost:3000/api/v1/address/set-default',{addressId:addressId},config);
+    const res = await axios.put(`${BASE_URL}/api/v1/address/set-default`,{addressId:addressId},config);
 }
 
 export const deleteAddress = async(addressId)=>{
@@ -47,5 +48,5 @@ export const deleteAddress = async(addressId)=>{
             'Content-Type': 'application/json',
         },
     };
-    const res = await axios.delete(`http://localhost:3000/api/v1/address/${addressId}`,config);
+    const res = await axios.delete(`${BASE_URL}/api/v1/address/${addressId}`,config);
 }
