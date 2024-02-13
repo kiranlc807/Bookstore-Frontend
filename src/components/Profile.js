@@ -7,7 +7,7 @@ import AddressCard from "./AddressCard";
 import AddressForm from "./CreateAddress";
 import { useDispatch, useSelector } from "react-redux";
 import { setAddress } from "../utils/store/AddressSlice";
-import { addAddress, getAddress } from "../utils/AddressApi";
+import { addAddress, getAddress ,setDefault , deleteAddress } from "../utils/AddressApi";
 import "../css/Profile.css"
 
 const UserProfile = () => {
@@ -25,17 +25,20 @@ const UserProfile = () => {
     fetchData();
   }, [dispatch]);
 
+  const adrs = addresses.find((address)=>address.default===true);
   const [editPersonalDetails, setEditPersonalDetails] = useState(false);
   const [addAddress, setAddAddress] = useState(false);
-  const [defaultAddressId, setDefaultAddressId] = useState(null);
+  const [defaultAddressId, setDefaultAddressId] = useState(adrs?adrs._id:null);
+
 
   const handleEditPersonalDetails = () => {
     setEditPersonalDetails(true);
   };
 
-  const handleChange = (e, addressId) => {
+  const handleChange = async(e, addressId) => {
     if (e.target.name === "bookId") {
       setDefaultAddressId(addressId);
+      await setDefault(addressId);
       const updatedAddresses = addresses.map((address) => {
         if (address._id === addressId) {
           return { ...address, default: true };
@@ -55,6 +58,12 @@ const UserProfile = () => {
   const handleAddAddress = () => {
     setAddAddress(true);
   };
+
+  const handleDeleteAddress = async(addressId)=>{
+    const updatedAddress = addresses.filter((adrs)=>adrs._id!==addressId);
+    dispatch(setAddress(updatedAddress));
+    const res = await deleteAddress(addressId);
+  }
 
   return (
     <div className="main-container">
@@ -142,6 +151,7 @@ const UserProfile = () => {
               {...address}
               handleChange={(e) => handleChange(e, address._id)}
               defaultAddressId={defaultAddressId}
+              DeleteAddress={(addressId)=> handleDeleteAddress(addressId)}
             />
           ))}
         </div>

@@ -4,6 +4,7 @@ import "../css/Login.css"; // Create a separate CSS file for styling
 import { useNavigate } from "react-router-dom";
 import { LoginApi,SignupApi } from "../utils/userapi";
 import image from '../assets/bookstore-logo.png'
+import Snackbar from '@mui/material/Snackbar';
 
 const AuthComponent = () => {
   const [authType, setAuthType] = useState("login");
@@ -11,12 +12,15 @@ const AuthComponent = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMsg,setErrorMsg] = useState("");
+  const [open, setOpen] = useState(false);
 
   const handleAuthTypeChange = (type) => {
     setAuthType(type);
   };
   const route = useNavigate();
   const handleSave = async() => {
+    try{
     if (authType === "login") {
       const res = await LoginApi({email:email,password:password})
       if(res.status===201){
@@ -30,6 +34,10 @@ const AuthComponent = () => {
         route('/');
       }
     }
+  }catch(error){
+    setErrorMsg(error.response.data.message)
+    setOpen(true);
+  }
   };
 
   return (
@@ -141,6 +149,12 @@ const AuthComponent = () => {
           )}
         </div>
       </div>
+      <Snackbar
+    open={open}
+    autoHideDuration={6000}
+    onClose={()=>setOpen(false)}
+    message={errorMsg}
+    />
     </div>
   );
 };

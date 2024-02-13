@@ -1,6 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Snackbar from '@mui/material/Snackbar';
 import { useEffect } from "react";
 import { useState } from "react";
 import { AddToCart, GetCartItem } from "../utils/CartApi";
@@ -30,9 +31,11 @@ import "../css/Cart.css"
 
 const Cart = () => {
   const cartItems = useSelector((store)=>store.cart.cartItems);
-  const address = useSelector((store)=>store.address.addressData)
+  const adrs = useSelector((store)=>store.address.addressData).find((adres)=>adres.default===true);
+  const [open, setOpen] = useState(false);
   const [accordionExpanded, setAccordionExpanded] = useState(false);
   const [orderDetailsExpanded, setOrderDetailsExpanded] = useState(false);
+  const [errorMsg,setErrorMsg] = useState("");
   const [formdata,setFormData]=useState({
     fullname:'',
     mobile:'',
@@ -42,13 +45,19 @@ const Cart = () => {
     type:'',
   })
   const dispach = useDispatch();
-
     const route = useNavigate();
   const handlePlaceOrder = async() => {
+    try{
     const res = await PlaceOrder(formdata);
-    if(res.code===201)
+    console.log(res,"res");
+    if(res.code===201){
+      dispach(setCartItems([]));
     route('/dashboard/orderplacedsuccessfully')
-    
+    }
+  }catch(error){
+    setErrorMsg(error.response.data.message)
+    setOpen(true);
+  } 
   };
 
 
@@ -60,21 +69,16 @@ const Cart = () => {
 
   const handleAddToCart = async (bookId) => {
     const bookObj = cartItems.find((ele)=>ele._id==bookId);
-    console.log("Selector",bookObj);
     dispach(addItemToCart(bookObj)); // Assuming you have a correct action creator
-  
     const res = await AddToCart(bookId);
   };
   
 
-  const handleRemoveFromCart = async (bookId) => {
-
+    const handleRemoveFromCart = async (bookId) => {
       const bookObj = cartItems.find((ele)=>ele._id==bookId);
-      console.log("Selector remove",bookObj);
       dispach(removeFromCart(bookObj));
       // If you have an async operation like an API call to update the cart on the server, you can add it here
       const res = await RemoveFromCart(bookId);
-      
     };
 
     const handleInputChange = (field, value) => {
@@ -87,14 +91,12 @@ const Cart = () => {
     useEffect(()=>{
       const fetchData = async ()=>{
         const addressData = await getAddress();
-        console.log("Adress",addressData);
         dispach(setAddress(addressData))
         // setFormData(addressData);
       };
       fetchData();
     },[])
     
-    console.log("useSelector redux",address);
   return (
     <div className="main-div">
       <div>
@@ -103,7 +105,7 @@ const Cart = () => {
         </Typography>
       </div>
       <div className="cart-container">
-      <div className="cart-container-innerBox" >
+      <div className="cart-container-innerBox">
       <div className="cart-container-cartCard">
         {cartItems.map((item) => (
           <CartItem key={item._id} {...item} bookId={item._id} setCartListAdd={(bookId) => handleAddToCart(bookId)} setCartListReduce={(bookId) => handleRemoveFromCart(bookId)} />
@@ -135,10 +137,10 @@ const Cart = () => {
             <TextField label="Full Name"  fullWidth margin="normal" onChange={(e) => handleInputChange('fullname', e.target.value)}/>
             <TextField label="Mobile Number"  fullWidth margin="normal" onChange={(e) => handleInputChange('mobile', e.target.value)}/>
             </div>
-            <TextField label="Address"  fullWidth multiline rows={3} margin="normal" onChange={(e) => handleInputChange('address', e.target.value)} />
+            <TextField label="Address" value={adrs?adrs.address:""} fullWidth multiline rows={3} margin="normal" onChange={(e) => handleInputChange('address', e.target.value)} />
             <div className="form-div-city-state">
-            <TextField label="City"  fullWidth margin="normal" onChange={(e) => handleInputChange('city', e.target.value)}/>
-            <TextField label="State"  fullWidth margin="normal" onChange={(e) => handleInputChange('state', e.target.value)}/>
+            <TextField label="City" value={adrs?adrs.city:""} fullWidth margin="normal" onChange={(e) => handleInputChange('city', e.target.value)}/>
+            <TextField label="State" value={adrs?adrs.state:""} fullWidth margin="normal" onChange={(e) => handleInputChange('state', e.target.value)}/>
             </div>
             <div className="customerdetail-button">
             <RadioGroup>
@@ -192,6 +194,12 @@ const Cart = () => {
             </div>
         </AccordionDetails>
       </Accordion>
+      <Snackbar
+    open={open}
+    autoHideDuration={6000}
+    onClose={()=>setOpen(false)}
+    message={errorMsg}
+    />
     </div>
   );
 };
